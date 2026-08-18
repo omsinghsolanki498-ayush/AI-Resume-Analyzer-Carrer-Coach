@@ -38,9 +38,9 @@ exports.RegisterUser = async (req, res) => {
             message: "User Registered Successfully",
 
             user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
+                id: createUser._id,
+                name: createUser.name,
+                email: createUser.email,
             }
         });
 
