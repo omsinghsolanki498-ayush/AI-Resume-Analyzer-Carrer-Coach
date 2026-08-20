@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import DashboardSidebar from "../Components/DashboardSidebar";
-import api from "../api/axios";
+import api from "../api/Axios";
 
 function ResumeAnalyzer() {
     const navigate = useNavigate();
