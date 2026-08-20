@@ -1,3 +1,182 @@
+// import {
+//     BrowserRouter,
+//     Routes,
+//     Route,
+//     Navigate,
+// } from "react-router-dom";
+
+// import Login from "./Pages/Login";
+// import Register from "./Pages/Register";
+
+// import Dashboard from "./Pages/Dashboard";
+
+// import ResumeAnalyzer from "./Pages/ResumeAnalyzer";
+// import ResumeAnalysis from "./Pages/ResumeAnalysis";
+// import CarrerCoach from "./Pages/CarrerCoach";
+// import Roadmap from "./Pages/Roadmap";
+
+// import Result from "./Components/Result";
+
+// import JobRecommendations from "./Pages/JobRecommendations";
+
+// import ProtectedRoute from "./Protect/ProtectedRoute";
+
+
+// function App() {
+
+//     const token = localStorage.getItem("token");
+
+//     return (
+//         <BrowserRouter>
+
+//             <Routes>
+
+//                 {/* ==========================================
+//                     PUBLIC ROUTES
+//                 ========================================== */}
+
+//                 {/* First page */}
+//                 <Route
+//                     path="/"
+//                     element={
+//                         token
+//                             ? <Navigate to="/dashboard" replace />
+//                             : <Navigate to="/register" replace />
+//                     }
+//                 />
+
+//                 {/* Register */}
+//                 <Route
+//                     path="/register"
+//                     element={
+//                         token
+//                             ? <Navigate to="/dashboard" replace />
+//                             : <Register />
+//                     }
+//                 />
+
+//                 {/* Login */}
+//                 <Route
+//                     path="/Login"
+//                     element={
+//                         token
+//                             ? <Navigate to="/dashboard" replace />
+//                             : <Login />
+//                     }
+//                 />
+
+
+//                 {/* ==========================================
+//                     PROTECTED ROUTES
+//                 ========================================== */}
+
+//                 {/* Dashboard */}
+
+//                 <Route
+//                     path="/dashboard"
+//                     element={
+//                         <ProtectedRoute>
+//                             <Dashboard />
+//                         </ProtectedRoute>
+//                     }
+//                 />
+
+
+//                 {/* Resume Analyzer */}
+
+//                 <Route
+//                     path="/resume-analyzer"
+//                     element={
+//                         <ProtectedRoute>
+//                             <ResumeAnalyzer />
+//                         </ProtectedRoute>
+//                     }
+//                 />
+
+
+//                 {/* Resume Analysis */}
+
+//                 <Route
+//                     path="/resume-analysis/:id"
+//                     element={
+//                         <ProtectedRoute>
+//                             <ResumeAnalysis />
+//                         </ProtectedRoute>
+//                     }
+//                 />
+
+
+//                 {/* Result */}
+
+//                 <Route
+//                     path="/result"
+//                     element={
+//                         <ProtectedRoute>
+//                             <Result />
+//                         </ProtectedRoute>
+//                     }
+//                 />
+
+
+//                 {/* Career Coach */}
+
+//                 <Route
+//                     path="/career-coach"
+//                     element={
+//                         <ProtectedRoute>
+//                             <CarrerCoach />
+//                         </ProtectedRoute>
+//                     }
+//                 />
+
+
+//                 {/* Career Roadmap */}
+
+//                 <Route
+//                     path="/roadmap"
+//                     element={
+//                         <ProtectedRoute>
+//                             <Roadmap />
+//                         </ProtectedRoute>
+//                     }
+//                 />
+
+
+//                 {/* Job Recommendations */}
+
+//                 <Route
+//                     path="/jobs"
+//                     element={
+//                         <ProtectedRoute>
+//                             <JobRecommendations />
+//                         </ProtectedRoute>
+//                     }
+//                 />
+
+
+//                 {/* ==========================================
+//                     UNKNOWN ROUTE
+//                 ========================================== */}
+
+//                 <Route
+//                     path="*"
+//                     element={
+//                         <Navigate to="/" replace />
+//                     }
+//                 />
+
+//             </Routes>
+
+//         </BrowserRouter>
+//     );
+// }
+
+// export default App;
+
+
+
+
+
 import {
     BrowserRouter,
     Routes,
@@ -5,72 +184,72 @@ import {
     Navigate,
 } from "react-router-dom";
 
-import Login from "./Pages/Login";
-import Register from "./Pages/Register";
+import Login from "./Pages/Login.jsx";
+import Register from "./Pages/Register.jsx";
 
-import Dashboard from "./Pages/Dashboard";
+import Dashboard from "./Pages/Dashboard.jsx";
 
-import ResumeAnalyzer from "./Pages/ResumeAnalyzer";
-import ResumeAnalysis from "./Pages/ResumeAnalysis";
-import CarrerCoach from "./Pages/CarrerCoach";
-import Roadmap from "./Pages/Roadmap";
+import ResumeAnalyzer from "./Pages/ResumeAnalyzer.jsx";
+import ResumeAnalysis from "./Pages/ResumeAnalysis.jsx";
+import CarrerCoach from "./Pages/CarrerCoach.jsx";
+import Roadmap from "./Pages/Roadmap.jsx";
 
-import Result from "./Components/Result";
+import Result from "./Components/Result.jsx";
 
-import JobRecommendations from "./Pages/JobRecommendations";
+import JobRecommendations from "./Pages/JobRecommendations.jsx";
 
-import ProtectedRoute from "./Protect/ProtectedRoute";
-
+import ProtectedRoute from "./Protect/ProtectedRoute.jsx";
 
 function App() {
-
     const token = localStorage.getItem("token");
 
     return (
         <BrowserRouter>
-
             <Routes>
-
-                {/* ==========================================
-                    PUBLIC ROUTES
-                ========================================== */}
-
-                {/* First page */}
                 <Route
                     path="/"
                     element={
-                        token
-                            ? <Navigate to="/dashboard" replace />
-                            : <Navigate to="/register" replace />
+                        token ? (
+                            <Navigate
+                                to="/dashboard"
+                                replace
+                            />
+                        ) : (
+                            <Navigate
+                                to="/register"
+                                replace
+                            />
+                        )
                     }
                 />
 
-                {/* Register */}
                 <Route
                     path="/register"
                     element={
-                        token
-                            ? <Navigate to="/dashboard" replace />
-                            : <Register />
+                        token ? (
+                            <Navigate
+                                to="/dashboard"
+                                replace
+                            />
+                        ) : (
+                            <Register />
+                        )
                     }
                 />
 
-                {/* Login */}
                 <Route
                     path="/Login"
                     element={
-                        token
-                            ? <Navigate to="/dashboard" replace />
-                            : <Login />
+                        token ? (
+                            <Navigate
+                                to="/dashboard"
+                                replace
+                            />
+                        ) : (
+                            <Login />
+                        )
                     }
                 />
-
-
-                {/* ==========================================
-                    PROTECTED ROUTES
-                ========================================== */}
-
-                {/* Dashboard */}
 
                 <Route
                     path="/dashboard"
@@ -81,9 +260,6 @@ function App() {
                     }
                 />
 
-
-                {/* Resume Analyzer */}
-
                 <Route
                     path="/resume-analyzer"
                     element={
@@ -92,9 +268,6 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-
-
-                {/* Resume Analysis */}
 
                 <Route
                     path="/resume-analysis/:id"
@@ -105,9 +278,6 @@ function App() {
                     }
                 />
 
-
-                {/* Result */}
-
                 <Route
                     path="/result"
                     element={
@@ -116,9 +286,6 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-
-
-                {/* Career Coach */}
 
                 <Route
                     path="/career-coach"
@@ -129,9 +296,6 @@ function App() {
                     }
                 />
 
-
-                {/* Career Roadmap */}
-
                 <Route
                     path="/roadmap"
                     element={
@@ -140,9 +304,6 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-
-
-                {/* Job Recommendations */}
 
                 <Route
                     path="/jobs"
@@ -153,20 +314,17 @@ function App() {
                     }
                 />
 
-
-                {/* ==========================================
-                    UNKNOWN ROUTE
-                ========================================== */}
-
                 <Route
                     path="*"
                     element={
-                        <Navigate to="/" replace />
+                        <Navigate
+                            to="/"
+                            replace
+                        />
                     }
                 />
 
             </Routes>
-
         </BrowserRouter>
     );
 }
