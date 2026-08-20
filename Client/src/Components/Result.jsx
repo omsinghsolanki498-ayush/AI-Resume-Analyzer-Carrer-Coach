@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useDashboard } from "../context/DashboardContext";
+import { useDashboard } from "../context/DashboardContext.jsx";
 import StatCard from "../Components/StatCard";
 import Footer from "../Components/Footer";
 
