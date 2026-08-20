@@ -7,7 +7,7 @@ const {
     getChat,
 } = require("../Controllers/CarrerCoachController");
 
-const authmiddleware = require("../Middleware/authmiddleware");
+const authmiddleware = require("../Middleware/AuthMiddleware");
 
 router.get(
     "/history",

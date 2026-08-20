@@ -1,5 +1,5 @@
 const axios = require("axios");
-const Resume = require("../models/Resume");
+const Resume = require("../Models/Resume");
 
 const analyzeResume = async (req, res) => {
   try {

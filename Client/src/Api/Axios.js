@@ -1,13 +1,15 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3002/api",
+  baseURL:
+    "https://ai-resume-analyzer-carrer-coach.onrender.com/api",
+
+  withCredentials: true,
 });
 
 api.interceptors.request.use(
   (config) => {
-    const token =
-      localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     if (token) {
       config.headers.Authorization =
@@ -16,9 +18,7 @@ api.interceptors.request.use(
 
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 export default api;
