@@ -25,9 +25,9 @@ app.get("/", (req, res) => {
 app.use("/api/auth", AuthRoutes);
 app.use("/api/resume", ResumeRoutes);
 app.use("/api/ai", analyzeResume);
-app.use("/api/career-coach",CarrerCoachRoute);
+app.use("/api/career-coach", CarrerCoachRoute);
 app.use("/api/roadmap", generateRoadmap);
-app.use("/api/jobs",JobRoutes);
+app.use("/api/jobs", JobRoutes);
 
 app.listen(3002, () => {
     console.log("Server Is Running");

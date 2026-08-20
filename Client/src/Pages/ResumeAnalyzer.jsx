@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import DashboardSidebar from "../Components/DashboardSidebar";
 import api from "../api/axios";
 
 function ResumeAnalyzer() {
     const navigate = useNavigate();
 
-    // =========================
+    // =========================================================
     // STATES
-    // =========================
+    // =========================================================
 
     const [file, setFile] = useState(null);
     const [resume, setResume] = useState(null);
@@ -24,9 +26,9 @@ function ResumeAnalyzer() {
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
 
-    // =========================
+    // =========================================================
     // TARGET ROLES
-    // =========================
+    // =========================================================
 
     const roles = [
         "Full Stack Developer",
@@ -41,12 +43,12 @@ function ResumeAnalyzer() {
         "DevOps Engineer",
     ];
 
-    // =========================
+    // =========================================================
     // FILE SELECT
-    // =========================
+    // =========================================================
 
     const handleFileChange = (e) => {
-        const selectedFile = e.target.files[0];
+        const selectedFile = e.target.files?.[0];
 
         setMessage("");
         setError("");
@@ -58,39 +60,30 @@ function ResumeAnalyzer() {
             return;
         }
 
-        // PDF validation
-        if (
-            selectedFile.type !== "application/pdf" &&
-            !selectedFile.name
+        const isPdf =
+            selectedFile.type === "application/pdf" ||
+            selectedFile.name
                 .toLowerCase()
-                .endsWith(".pdf")
-        ) {
+                .endsWith(".pdf");
+
+        if (!isPdf) {
             setFile(null);
-
-            setError(
-                "Only PDF files are allowed."
-            );
-
+            setError("Only PDF files are allowed.");
             return;
         }
 
-        // 5 MB validation
         if (selectedFile.size > 5 * 1024 * 1024) {
             setFile(null);
-
-            setError(
-                "File size must be less than 5 MB."
-            );
-
+            setError("File size must be less than 5 MB.");
             return;
         }
 
         setFile(selectedFile);
     };
 
-    // =========================
+    // =========================================================
     // REMOVE FILE
-    // =========================
+    // =========================================================
 
     const removeFile = () => {
         setFile(null);
@@ -100,25 +93,20 @@ function ResumeAnalyzer() {
         setError("");
     };
 
-    // =========================
+    // =========================================================
     // UPLOAD RESUME
-    // =========================
+    // =========================================================
 
     const handleUpload = async () => {
         if (!file) {
-            setError(
-                "Please select a resume first."
-            );
+            setError("Please select a resume first.");
             return;
         }
 
-        const token =
-            localStorage.getItem("token");
+        const token = localStorage.getItem("token");
 
         if (!token) {
-            setError(
-                "Session expired. Please login again."
-            );
+            setError("Session expired. Please login again.");
 
             setTimeout(() => {
                 navigate("/login");
@@ -136,10 +124,7 @@ function ResumeAnalyzer() {
 
             const formData = new FormData();
 
-            formData.append(
-                "resume",
-                file
-            );
+            formData.append("resume", file);
 
             const response = await api.post(
                 "/resume/upload",
@@ -151,32 +136,21 @@ function ResumeAnalyzer() {
                 response.data
             );
 
-            setResume(
-                response.data.resume
-            );
+            setResume(response.data.resume);
 
             setMessage(
                 "Resume uploaded successfully 🎉"
             );
-
         } catch (error) {
             console.error(
                 "UPLOAD ERROR:",
                 error.response?.data ||
-                error.message
+                    error.message
             );
 
-            // 401
-            if (
-                error.response?.status === 401
-            ) {
-                localStorage.removeItem(
-                    "token"
-                );
-
-                localStorage.removeItem(
-                    "user"
-                );
+            if (error.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
 
                 setError(
                     "Session expired. Please login again."
@@ -190,19 +164,17 @@ function ResumeAnalyzer() {
             }
 
             setError(
-                error.response?.data
-                    ?.message ||
-                "Resume upload failed."
+                error.response?.data?.message ||
+                    "Resume upload failed."
             );
-
         } finally {
             setLoading(false);
         }
     };
 
-    // =========================
+    // =========================================================
     // AI ANALYSIS
-    // =========================
+    // =========================================================
 
     const handleAnalyze = async () => {
         if (!resume) {
@@ -216,9 +188,7 @@ function ResumeAnalyzer() {
             resume.id || resume._id;
 
         if (!resumeId) {
-            setError(
-                "Resume ID not found."
-            );
+            setError("Resume ID not found.");
             return;
         }
 
@@ -240,10 +210,6 @@ function ResumeAnalyzer() {
                 response.data
             );
 
-            // =========================
-            // SAVE AI RESULT IN STATE
-            // =========================
-
             setAnalysis(
                 response.data.analysis
             );
@@ -251,25 +217,16 @@ function ResumeAnalyzer() {
             setMessage(
                 "AI analysis completed successfully 🎉"
             );
-
         } catch (error) {
             console.error(
                 "AI ANALYSIS ERROR:",
                 error.response?.data ||
-                error.message
+                    error.message
             );
 
-            // 401
-            if (
-                error.response?.status === 401
-            ) {
-                localStorage.removeItem(
-                    "token"
-                );
-
-                localStorage.removeItem(
-                    "user"
-                );
+            if (error.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
 
                 setError(
                     "Session expired. Please login again."
@@ -283,28 +240,24 @@ function ResumeAnalyzer() {
             }
 
             setError(
-                error.response?.data
-                    ?.message ||
-                "AI analysis failed."
+                error.response?.data?.message ||
+                    "AI analysis failed."
             );
-
         } finally {
             setAnalyzing(false);
         }
     };
 
-    // =========================
+    // =========================================================
     // OPEN FULL ANALYSIS
-    // =========================
+    // =========================================================
 
     const handleOpenFullAnalysis = () => {
         const resumeId =
             resume?.id || resume?._id;
 
         if (!resumeId) {
-            setError(
-                "Resume ID not found."
-            );
+            setError("Resume ID not found.");
             return;
         }
 
@@ -313,9 +266,9 @@ function ResumeAnalyzer() {
         );
     };
 
-    // =========================
-    // ATS SCORE LABEL
-    // =========================
+    // =========================================================
+    // SCORE TEXT
+    // =========================================================
 
     const getScoreText = (score) => {
         if (score >= 80) {
@@ -333,592 +286,1480 @@ function ResumeAnalyzer() {
         return "Needs Improvement";
     };
 
-    // =========================
+    // =========================================================
+    // RESET ANALYSIS
+    // =========================================================
+
+    const handleNewAnalysis = () => {
+        setAnalysis(null);
+        setResume(null);
+        setFile(null);
+        setMessage("");
+        setError("");
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    };
+
+    // =========================================================
+    // SAFE SCORE
+    // =========================================================
+
+    const atsScore = Math.min(
+        Math.max(
+            Number(analysis?.atsScore) || 0,
+            0
+        ),
+        100
+    );
+
+    const jobMatchScore = Math.min(
+        Math.max(
+            Number(
+                analysis?.jobRoleMatch?.score
+            ) || 0,
+            0
+        ),
+        100
+    );
+
+    // =========================================================
     // JSX
-    // =========================
+    // =========================================================
 
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="
+            min-h-screen
+            w-full
+            overflow-x-hidden
+            bg-slate-950
+            text-slate-300
+        ">
 
-            {/* =========================
-          MAIN CONTAINER
-      ========================== */}
+            <DashboardSidebar />
 
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <main className="w-full">
 
-                {/* =========================
-            BACK BUTTON
-        ========================== */}
+                {/* =================================================
+                    HEADER
+                ================================================== */}
 
-                <button
-                    onClick={() =>
-                        navigate("/dashboard")
-                    }
-                    className="mb-6 inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800 font-semibold transition"
-                >
-                    ← Back to Dashboard
-                </button>
+                <section className="
+                    w-full
+                    px-4
+                    pb-8
+                    pt-6
+                    sm:px-6
+                    sm:pb-10
+                    sm:pt-8
+                    lg:px-8
+                    lg:pb-12
+                    lg:pt-10
+                ">
 
-                {/* =========================
-            HEADER
-        ========================== */}
+                    <div className="
+                        mx-auto
+                        w-full
+                        max-w-7xl
+                    ">
 
-                <div className="mb-8">
+                        <div className="
+                            mx-auto
+                            w-full
+                            max-w-3xl
+                            text-center
+                        ">
 
-                    <div className="inline-flex items-center gap-2 bg-indigo-50 text-indigo-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                        ✨ AI Powered
-                    </div>
+                            {/* BACK */}
 
-                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900">
-                        AI Resume Analyzer
-                    </h1>
+                            <div className="
+                                mb-6
+                                flex
+                                justify-center
+                                sm:mb-8
+                            ">
 
-                    <p className="text-slate-500 mt-3 text-base sm:text-lg max-w-2xl">
-                        Upload your resume and get AI-powered
-                        ATS scoring, skill analysis and
-                        personalized career suggestions.
-                    </p>
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        navigate(
+                                            "/dashboard"
+                                        )
+                                    }
+                                    className="
+                                        inline-flex
+                                        items-center
+                                        justify-center
+                                        gap-2
+                                        rounded-md
+                                        px-3
+                                        py-2
+                                        text-xs
+                                        font-semibold
+                                        text-indigo-400
+                                        transition
+                                        hover:bg-indigo-500/10
+                                        hover:text-indigo-300
+                                        sm:text-sm
+                                    "
+                                >
+                                    <span>←</span>
 
-                </div>
+                                    <span>
+                                        Back to Dashboard
+                                    </span>
+                                </button>
 
-                {/* =========================
-            UPLOAD CARD
-        ========================== */}
+                            </div>
 
-                <div className="bg-white border border-slate-200 rounded-3xl shadow-sm p-5 sm:p-8 lg:p-10">
+                            {/* BADGE */}
 
-                    {/* TOP */}
+                            <div className="flex justify-center">
 
-                    <div className="text-center">
+                                <div className="
+                                    inline-flex
+                                    items-center
+                                    gap-2
+                                    rounded-md
+                                    border
+                                    border-indigo-500/20
+                                    bg-indigo-500/10
+                                    px-3
+                                    py-1.5
+                                    text-[10px]
+                                    font-semibold
+                                    uppercase
+                                    tracking-wider
+                                    text-indigo-300
+                                    sm:px-4
+                                    sm:py-2
+                                    sm:text-xs
+                                ">
 
-                        <div className="mx-auto w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-indigo-50 flex items-center justify-center text-4xl sm:text-5xl">
-                            📄
+                                    <span className="text-indigo-400">
+                                        ✦
+                                    </span>
+
+                                    AI Powered
+
+                                </div>
+
+                            </div>
+
+                            {/* TITLE */}
+
+                            <h1 className="
+                                mt-4
+                                text-2xl
+                                font-bold
+                                leading-tight
+                                tracking-tight
+                                text-white
+                                sm:mt-5
+                                sm:text-3xl
+                                md:text-4xl
+                                lg:text-5xl
+                            ">
+                                AI Resume Analyzer
+                            </h1>
+
+                            {/* DESCRIPTION */}
+
+                            <p className="
+                                mx-auto
+                                mt-3
+                                w-full
+                                max-w-2xl
+                                px-2
+                                text-xs
+                                leading-5
+                                text-slate-500
+                                sm:mt-4
+                                sm:px-0
+                                sm:text-sm
+                                sm:leading-6
+                                md:text-base
+                            ">
+                                Upload your resume and get
+                                AI-powered ATS scoring,
+                                skill analysis and
+                                personalized career
+                                suggestions.
+                            </p>
+
                         </div>
 
-                        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-6">
-                            Upload Your Resume
-                        </h2>
-
-                        <p className="text-slate-500 mt-2">
-                            PDF format only • Maximum 5 MB
-                        </p>
-
                     </div>
 
-                    {/* =========================
-              DROP AREA
-          ========================== */}
+                </section>
 
-                    <label
-                        htmlFor="resume"
-                        className="mt-8 block border-2 border-dashed border-slate-300 rounded-2xl p-8 sm:p-12 text-center cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/30 transition"
-                    >
+                {/* =================================================
+                    UPLOAD
+                ================================================== */}
 
-                        <div className="text-4xl sm:text-5xl mb-4">
-                            ☁️
-                        </div>
+                <section className="
+                    w-full
+                    px-4
+                    pb-8
+                    sm:px-6
+                    sm:pb-10
+                    lg:px-8
+                ">
 
-                        <p className="font-bold text-slate-800 text-lg">
-                            Click to choose your resume
-                        </p>
+                    <div className="
+                        mx-auto
+                        w-full
+                        max-w-3xl
+                    ">
 
-                        <p className="text-sm text-slate-500 mt-2">
-                            Upload a PDF resume up to 5 MB
-                        </p>
+                        <div className="
+                            w-full
+                            rounded-md
+                            border
+                            border-slate-800
+                            bg-slate-900
+                            p-4
+                            shadow-xl
+                            shadow-black/20
+                            sm:p-6
+                            md:p-8
+                        ">
 
-                        <input
-                            id="resume"
-                            type="file"
-                            accept=".pdf,application/pdf"
-                            onChange={handleFileChange}
-                            className="hidden"
-                        />
+                            {/* CARD HEADER */}
 
-                    </label>
+                            <div className="text-center">
 
-                    {/* =========================
-              SELECTED FILE
-          ========================== */}
-
-                    {file && (
-                        <div className="mt-5 bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-
-                            <div className="flex items-center gap-3 min-w-0">
-
-                                <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-xl shrink-0">
+                                <div className="
+                                    mx-auto
+                                    flex
+                                    h-14
+                                    w-14
+                                    items-center
+                                    justify-center
+                                    rounded-md
+                                    bg-slate-950
+                                    text-2xl
+                                    ring-1
+                                    ring-indigo-500/20
+                                    sm:h-16
+                                    sm:w-16
+                                    sm:text-3xl
+                                ">
                                     📄
                                 </div>
 
-                                <div className="min-w-0">
-
-                                    <p className="font-semibold text-slate-800 truncate">
-                                        {file.name}
-                                    </p>
-
-                                    <p className="text-xs text-slate-500 mt-1">
-                                        {(
-                                            file.size /
-                                            1024 /
-                                            1024
-                                        ).toFixed(2)}{" "}
-                                        MB
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                            <button
-                                onClick={removeFile}
-                                className="text-red-500 hover:text-red-700 font-semibold text-sm self-end sm:self-auto"
-                            >
-                                Remove
-                            </button>
-
-                        </div>
-                    )}
-
-                    {/* =========================
-              TARGET ROLE
-          ========================== */}
-
-                    <div className="mt-7">
-
-                        <label className="block font-semibold text-slate-800 mb-2">
-                            Target Job Role
-                        </label>
-
-                        <select
-                            value={targetRole}
-                            onChange={(e) =>
-                                setTargetRole(
-                                    e.target.value
-                                )
-                            }
-                            className="w-full border border-slate-300 rounded-xl px-4 py-3.5 bg-white outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                        >
-
-                            {roles.map(
-                                (role) => (
-                                    <option
-                                        key={role}
-                                        value={role}
-                                    >
-                                        {role}
-                                    </option>
-                                )
-                            )}
-
-                        </select>
-
-                        <p className="text-xs text-slate-500 mt-2">
-                            AI will compare your resume with
-                            this job role.
-                        </p>
-
-                    </div>
-
-                    {/* =========================
-              UPLOAD BUTTON
-          ========================== */}
-
-                    <button
-                        onClick={handleUpload}
-                        disabled={!file || loading}
-                        className="w-full mt-6 py-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold transition"
-                    >
-                        {loading ? (
-                            <span className="flex items-center justify-center gap-2">
-                                <span className="animate-spin">
-                                    ⏳
-                                </span>
-
-                                Uploading Resume...
-                            </span>
-                        ) : (
-                            "Upload Resume"
-                        )}
-                    </button>
-
-                    {/* =========================
-              SUCCESS MESSAGE
-          ========================== */}
-
-                    {message && (
-                        <div className="mt-4 p-4 rounded-xl bg-green-50 border border-green-200 text-green-700 text-center text-sm font-medium">
-                            {message}
-                        </div>
-                    )}
-
-                    {/* =========================
-              ERROR MESSAGE
-          ========================== */}
-
-                    {error && (
-                        <div className="mt-4 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-center text-sm font-medium">
-                            {error}
-                        </div>
-                    )}
-
-                </div>
-
-                {/* =========================
-            UPLOADED RESUME
-        ========================== */}
-
-                {resume && (
-                    <div className="mt-8 bg-white border border-slate-200 rounded-3xl shadow-sm p-5 sm:p-8">
-
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
-
-                            <div className="flex items-center gap-4 min-w-0">
-
-                                <div className="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center text-2xl shrink-0">
-                                    ✅
-                                </div>
-
-                                <div className="min-w-0">
-
-                                    <p className="text-sm text-green-600 font-semibold">
-                                        Resume Uploaded
-                                    </p>
-
-                                    <h2 className="text-lg sm:text-xl font-bold text-slate-900 truncate">
-                                        {resume.originalName ||
-                                            file?.name}
-                                    </h2>
-
-                                </div>
-
-                            </div>
-
-                            {resume.cloudinaryUrl && (
-                                <a
-                                    href={
-                                        resume.cloudinaryUrl
-                                    }
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="text-indigo-600 hover:text-indigo-800 font-semibold"
-                                >
-                                    View Resume →
-                                </a>
-                            )}
-
-                        </div>
-
-                        {/* =========================
-                ANALYZE BUTTON
-            ========================== */}
-
-                        <button
-                            onClick={handleAnalyze}
-                            disabled={analyzing}
-                            className="w-full mt-7 py-4 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold transition"
-                        >
-                            {analyzing ? (
-                                <span className="flex items-center justify-center gap-2">
-
-                                    <span className="animate-spin">
-                                        ⏳
-                                    </span>
-
-                                    AI is analyzing your resume...
-
-                                </span>
-                            ) : (
-                                "✨ Analyze Resume with AI"
-                            )}
-                        </button>
-
-                        {/* =========================
-                EXTRACTED TEXT
-            ========================== */}
-
-                        {resume.extractedText && (
-                            <details className="mt-6">
-
-                                <summary className="cursor-pointer font-semibold text-slate-700">
-                                    View Extracted Resume Text
-                                </summary>
-
-                                <div className="mt-4 bg-slate-50 border border-slate-200 rounded-2xl p-5 max-h-80 overflow-y-auto">
-
-                                    <p className="text-sm text-slate-600 whitespace-pre-wrap leading-6">
-                                        {resume.extractedText}
-                                    </p>
-
-                                </div>
-
-                            </details>
-                        )}
-
-                    </div>
-                )}
-
-                {/* =========================
-            AI ANALYSIS RESULTS
-        ========================== */}
-
-                {analysis && (
-                    <div className="mt-8 space-y-6">
-
-                        {/* =========================
-                RESULTS HEADER
-            ========================== */}
-
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-
-                            <div>
-
-                                <div className="inline-flex items-center gap-2 bg-purple-50 text-purple-700 px-4 py-2 rounded-full text-sm font-semibold">
-                                    🤖 AI Analysis Complete
-                                </div>
-
-                                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-3">
-                                    Your Resume Analysis
+                                <h2 className="
+                                    mt-4
+                                    text-xl
+                                    font-bold
+                                    text-white
+                                    sm:text-2xl
+                                ">
+                                    Upload Your Resume
                                 </h2>
 
+                                <p className="
+                                    mt-2
+                                    text-xs
+                                    text-slate-500
+                                    sm:text-sm
+                                ">
+                                    PDF format only • Maximum
+                                    5 MB
+                                </p>
+
                             </div>
 
-                            {/* =========================
-                  NEW STEP 8 BUTTON
-              ========================== */}
+                            {/* DROP AREA */}
 
-                            <button
-                                onClick={
-                                    handleOpenFullAnalysis
-                                }
-                                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition shadow-sm"
+                            <label
+                                htmlFor="resume"
+                                className="
+                                    mt-6
+                                    block
+                                    w-full
+                                    cursor-pointer
+                                    rounded-md
+                                    border-2
+                                    border-dashed
+                                    border-slate-700
+                                    bg-slate-950/60
+                                    px-4
+                                    py-8
+                                    text-center
+                                    transition
+                                    hover:border-indigo-500/70
+                                    hover:bg-indigo-500/5
+                                    sm:px-6
+                                    sm:py-10
+                                    md:py-12
+                                "
                             >
-                                Open Full Analysis →
-                            </button>
 
-                        </div>
-
-                        {/* =========================
-                ATS SCORE + JOB MATCH
-            ========================== */}
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                            {/* ATS SCORE */}
-
-                            <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8">
-
-                                <p className="text-sm font-semibold text-slate-500">
-                                    ATS Score
-                                </p>
-
-                                <div className="flex items-end gap-2 mt-3">
-
-                                    <span className="text-5xl sm:text-6xl font-bold text-indigo-600">
-                                        {analysis.atsScore ||
-                                            0}
-                                    </span>
-
-                                    <span className="text-slate-400 mb-2">
-                                        /100
-                                    </span>
-
+                                <div className="
+                                    mx-auto
+                                    flex
+                                    h-11
+                                    w-11
+                                    items-center
+                                    justify-center
+                                    rounded-md
+                                    bg-slate-900
+                                    text-xl
+                                    ring-1
+                                    ring-slate-800
+                                    sm:h-12
+                                    sm:w-12
+                                    sm:text-2xl
+                                ">
+                                    ☁️
                                 </div>
 
-                                <p className="mt-2 font-semibold text-slate-700">
-                                    {getScoreText(
-                                        analysis.atsScore ||
-                                        0
-                                    )}
+                                <p className="
+                                    mt-4
+                                    text-sm
+                                    font-semibold
+                                    text-slate-200
+                                    sm:text-base
+                                ">
+                                    Click to choose your resume
                                 </p>
 
-                                <div className="mt-6 h-3 bg-slate-100 rounded-full overflow-hidden">
-
-                                    <div
-                                        className="h-full bg-indigo-600 rounded-full transition-all duration-700"
-                                        style={{
-                                            width: `${Math.min(
-                                                Math.max(
-                                                    analysis.atsScore ||
-                                                    0,
-                                                    0
-                                                ),
-                                                100
-                                            )}%`,
-                                        }}
-                                    />
-
-                                </div>
-
-                            </div>
-
-                            {/* JOB MATCH */}
-
-                            <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8">
-
-                                <p className="text-sm font-semibold text-slate-500">
-                                    Target Role Match
+                                <p className="
+                                    mt-2
+                                    text-xs
+                                    text-slate-500
+                                ">
+                                    Upload a PDF resume up to
+                                    5 MB
                                 </p>
 
-                                <div className="flex items-center justify-between gap-4 mt-3">
+                                <input
+                                    id="resume"
+                                    type="file"
+                                    accept=".pdf,application/pdf"
+                                    onChange={
+                                        handleFileChange
+                                    }
+                                    className="hidden"
+                                />
 
-                                    <div>
+                            </label>
 
-                                        <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
-                                            {analysis
-                                                .jobRoleMatch
-                                                ?.role ||
-                                                targetRole}
-                                        </h3>
+                            {/* FILE */}
+
+                            {file && (
+                                <div className="
+                                    mt-4
+                                    flex
+                                    w-full
+                                    flex-col
+                                    gap-3
+                                    rounded-md
+                                    border
+                                    border-slate-800
+                                    bg-slate-950
+                                    p-4
+                                    sm:flex-row
+                                    sm:items-center
+                                    sm:justify-between
+                                ">
+
+                                    <div className="
+                                        flex
+                                        min-w-0
+                                        items-center
+                                        gap-3
+                                    ">
+
+                                        <div className="
+                                            flex
+                                            h-10
+                                            w-10
+                                            shrink-0
+                                            items-center
+                                            justify-center
+                                            rounded-md
+                                            bg-red-500/10
+                                        ">
+                                            📄
+                                        </div>
+
+                                        <div className="min-w-0">
+
+                                            <p className="
+                                                truncate
+                                                text-sm
+                                                font-semibold
+                                                text-slate-200
+                                            ">
+                                                {file.name}
+                                            </p>
+
+                                            <p className="
+                                                mt-1
+                                                text-xs
+                                                text-slate-500
+                                            ">
+                                                {(
+                                                    file.size /
+                                                    1024 /
+                                                    1024
+                                                ).toFixed(2)}{" "}
+                                                MB
+                                            </p>
+
+                                        </div>
 
                                     </div>
 
-                                    <div className="text-right">
+                                    <button
+                                        type="button"
+                                        onClick={removeFile}
+                                        className="
+                                            self-end
+                                            rounded-md
+                                            px-2
+                                            py-1
+                                            text-xs
+                                            font-semibold
+                                            text-red-400
+                                            transition
+                                            hover:bg-red-500/10
+                                            hover:text-red-300
+                                            sm:self-auto
+                                        "
+                                    >
+                                        Remove
+                                    </button>
 
-                                        <span className="text-4xl sm:text-5xl font-bold text-indigo-600">
-                                            {analysis
-                                                .jobRoleMatch
-                                                ?.score ||
-                                                0}
-                                            %
+                                </div>
+                            )}
+
+                            {/* TARGET ROLE */}
+
+                            <div className="mt-5">
+
+                                <label
+                                    htmlFor="targetRole"
+                                    className="
+                                        mb-2
+                                        block
+                                        text-sm
+                                        font-semibold
+                                        text-slate-200
+                                    "
+                                >
+                                    Target Job Role
+                                </label>
+
+                                <select
+                                    id="targetRole"
+                                    value={targetRole}
+                                    onChange={(e) =>
+                                        setTargetRole(
+                                            e.target.value
+                                        )
+                                    }
+                                    className="
+                                        w-full
+                                        rounded-md
+                                        border
+                                        border-slate-700
+                                        bg-slate-950
+                                        px-4
+                                        py-3
+                                        text-sm
+                                        text-slate-200
+                                        outline-none
+                                        transition
+                                        focus:border-indigo-500
+                                        focus:ring-2
+                                        focus:ring-indigo-500/20
+                                    "
+                                >
+
+                                    {roles.map((role) => (
+                                        <option
+                                            key={role}
+                                            value={role}
+                                            className="bg-slate-900"
+                                        >
+                                            {role}
+                                        </option>
+                                    ))}
+
+                                </select>
+
+                                <p className="
+                                    mt-2
+                                    text-xs
+                                    text-slate-500
+                                ">
+                                    AI will compare your resume
+                                    with this job role.
+                                </p>
+
+                            </div>
+
+                            {/* UPLOAD */}
+
+                            <button
+                                type="button"
+                                onClick={handleUpload}
+                                disabled={!file || loading}
+                                className="
+                                    mt-5
+                                    flex
+                                    w-full
+                                    items-center
+                                    justify-center
+                                    rounded-md
+                                    bg-indigo-600
+                                    px-5
+                                    py-3.5
+                                    text-sm
+                                    font-bold
+                                    text-white
+                                    transition
+                                    hover:bg-indigo-500
+                                    active:scale-[0.99]
+                                    disabled:cursor-not-allowed
+                                    disabled:bg-slate-700
+                                    disabled:text-slate-500
+                                "
+                            >
+
+                                {loading ? (
+                                    <>
+                                        <span className="mr-2 animate-spin">
+                                            ⏳
+                                        </span>
+
+                                        Uploading Resume...
+                                    </>
+                                ) : (
+                                    "Upload Resume"
+                                )}
+
+                            </button>
+
+                            {/* MESSAGE */}
+
+                            {message && (
+                                <div className="
+                                    mt-4
+                                    rounded-md
+                                    border
+                                    border-emerald-500/20
+                                    bg-emerald-500/10
+                                    px-4
+                                    py-3
+                                    text-center
+                                    text-xs
+                                    font-medium
+                                    text-emerald-400
+                                ">
+                                    {message}
+                                </div>
+                            )}
+
+                            {/* ERROR */}
+
+                            {error && (
+                                <div className="
+                                    mt-4
+                                    rounded-md
+                                    border
+                                    border-red-500/20
+                                    bg-red-500/10
+                                    px-4
+                                    py-3
+                                    text-center
+                                    text-xs
+                                    font-medium
+                                    text-red-400
+                                ">
+                                    {error}
+                                </div>
+                            )}
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                {/* =================================================
+                    UPLOADED RESUME
+                ================================================== */}
+
+                {resume && (
+                    <section className="
+                        px-4
+                        pb-8
+                        sm:px-6
+                        lg:px-8
+                    ">
+
+                        <div className="
+                            mx-auto
+                            w-full
+                            max-w-3xl
+                        ">
+
+                            <div className="
+                                rounded-md
+                                border
+                                border-slate-800
+                                bg-slate-900
+                                p-5
+                                shadow-xl
+                                shadow-black/20
+                                sm:p-7
+                                md:p-8
+                            ">
+
+                                <div className="
+                                    flex
+                                    flex-col
+                                    gap-4
+                                    sm:flex-row
+                                    sm:items-center
+                                    sm:justify-between
+                                ">
+
+                                    <div className="
+                                        flex
+                                        min-w-0
+                                        items-center
+                                        gap-3
+                                    ">
+
+                                        <div className="
+                                            flex
+                                            h-12
+                                            w-12
+                                            shrink-0
+                                            items-center
+                                            justify-center
+                                            rounded-md
+                                            bg-emerald-500/10
+                                            text-xl
+                                        ">
+                                            ✓
+                                        </div>
+
+                                        <div className="min-w-0">
+
+                                            <p className="
+                                                text-xs
+                                                font-semibold
+                                                text-emerald-400
+                                            ">
+                                                Resume Uploaded
+                                            </p>
+
+                                            <h2 className="
+                                                mt-1
+                                                truncate
+                                                text-sm
+                                                font-bold
+                                                text-white
+                                                sm:text-base
+                                            ">
+                                                {resume.originalName ||
+                                                    file?.name}
+                                            </h2>
+
+                                        </div>
+
+                                    </div>
+
+                                    {resume.cloudinaryUrl && (
+                                        <a
+                                            href={
+                                                resume.cloudinaryUrl
+                                            }
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="
+                                                rounded-md
+                                                px-2
+                                                py-2
+                                                text-sm
+                                                font-semibold
+                                                text-indigo-400
+                                                transition
+                                                hover:bg-indigo-500/10
+                                                hover:text-indigo-300
+                                            "
+                                        >
+                                            View Resume →
+                                        </a>
+                                    )}
+
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onClick={handleAnalyze}
+                                    disabled={analyzing}
+                                    className="
+                                        mt-6
+                                        flex
+                                        w-full
+                                        items-center
+                                        justify-center
+                                        rounded-md
+                                        bg-white
+                                        px-5
+                                        py-3.5
+                                        text-sm
+                                        font-bold
+                                        text-slate-950
+                                        transition
+                                        hover:bg-slate-200
+                                        disabled:cursor-not-allowed
+                                        disabled:bg-slate-700
+                                        disabled:text-slate-500
+                                    "
+                                >
+
+                                    {analyzing ? (
+                                        <>
+                                            <span className="mr-2 animate-spin">
+                                                ⏳
+                                            </span>
+
+                                            AI is analyzing your
+                                            resume...
+                                        </>
+                                    ) : (
+                                        "✦ Analyze Resume with AI"
+                                    )}
+
+                                </button>
+
+                                {resume.extractedText && (
+                                    <details className="mt-5">
+
+                                        <summary className="
+                                            cursor-pointer
+                                            rounded-md
+                                            px-1
+                                            py-2
+                                            text-sm
+                                            font-semibold
+                                            text-slate-300
+                                            hover:text-white
+                                        ">
+                                            View Extracted Resume
+                                            Text
+                                        </summary>
+
+                                        <div className="
+                                            mt-3
+                                            max-h-80
+                                            overflow-y-auto
+                                            rounded-md
+                                            border
+                                            border-slate-800
+                                            bg-slate-950
+                                            p-4
+                                            sm:p-5
+                                        ">
+
+                                            <p className="
+                                                whitespace-pre-wrap
+                                                text-sm
+                                                leading-6
+                                                text-slate-500
+                                            ">
+                                                {
+                                                    resume.extractedText
+                                                }
+                                            </p>
+
+                                        </div>
+
+                                    </details>
+                                )}
+
+                            </div>
+
+                        </div>
+
+                    </section>
+                )}
+
+                {/* =================================================
+                    AI ANALYSIS
+                ================================================== */}
+
+                {analysis && (
+                    <section className="
+                        px-4
+                        pb-10
+                        sm:px-6
+                        sm:pb-12
+                        lg:px-8
+                    ">
+
+                        <div className="
+                            mx-auto
+                            w-full
+                            max-w-6xl
+                        ">
+
+                            {/* RESULTS HEADER */}
+
+                            <div className="
+                                mb-6
+                                flex
+                                flex-col
+                                gap-4
+                                sm:mb-7
+                                lg:flex-row
+                                lg:items-end
+                                lg:justify-between
+                            ">
+
+                                <div className="min-w-0">
+
+                                    <div className="
+                                        inline-flex
+                                        items-center
+                                        gap-2
+                                        rounded-md
+                                        border
+                                        border-purple-500/20
+                                        bg-purple-500/10
+                                        px-3
+                                        py-1.5
+                                        text-[10px]
+                                        font-semibold
+                                        text-purple-300
+                                        sm:text-xs
+                                    ">
+                                        <span>✦</span>
+                                        AI Analysis Complete
+                                    </div>
+
+                                    <h2 className="
+                                        mt-3
+                                        text-2xl
+                                        font-bold
+                                        text-white
+                                        sm:text-3xl
+                                    ">
+                                        Your Resume Analysis
+                                    </h2>
+
+                                    <p className="
+                                        mt-2
+                                        text-xs
+                                        text-slate-500
+                                        sm:text-sm
+                                    ">
+                                        Here's what AI found in
+                                        your resume.
+                                    </p>
+
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onClick={
+                                        handleOpenFullAnalysis
+                                    }
+                                    className="
+                                        w-full
+                                        rounded-md
+                                        bg-indigo-600
+                                        px-5
+                                        py-3
+                                        text-sm
+                                        font-bold
+                                        text-white
+                                        transition
+                                        hover:bg-indigo-500
+                                        sm:w-auto
+                                    "
+                                >
+                                    Open Full Analysis →
+                                </button>
+
+                            </div>
+
+                            {/* SCORES */}
+
+                            <div className="
+                                grid
+                                grid-cols-1
+                                gap-4
+                                lg:grid-cols-2
+                            ">
+
+                                {/* ATS */}
+
+                                <div className="
+                                    rounded-md
+                                    border
+                                    border-slate-800
+                                    bg-slate-900
+                                    p-5
+                                    sm:p-7
+                                ">
+
+                                    <p className="
+                                        text-xs
+                                        font-semibold
+                                        uppercase
+                                        tracking-wider
+                                        text-slate-500
+                                    ">
+                                        ATS Score
+                                    </p>
+
+                                    <div className="
+                                        mt-3
+                                        flex
+                                        items-end
+                                        gap-2
+                                    ">
+
+                                        <span className="
+                                            text-5xl
+                                            font-bold
+                                            text-indigo-400
+                                            sm:text-6xl
+                                        ">
+                                            {atsScore}
+                                        </span>
+
+                                        <span className="
+                                            mb-2
+                                            text-sm
+                                            text-slate-600
+                                        ">
+                                            /100
                                         </span>
 
                                     </div>
 
+                                    <p className="
+                                        mt-2
+                                        text-sm
+                                        font-semibold
+                                        text-slate-300
+                                    ">
+                                        {getScoreText(atsScore)}
+                                    </p>
+
+                                    <div className="
+                                        mt-5
+                                        h-2
+                                        overflow-hidden
+                                        rounded-md
+                                        bg-slate-800
+                                    ">
+
+                                        <div
+                                            className="
+                                                h-full
+                                                rounded-md
+                                                bg-indigo-500
+                                                transition-all
+                                                duration-700
+                                            "
+                                            style={{
+                                                width: `${atsScore}%`,
+                                            }}
+                                        />
+
+                                    </div>
+
                                 </div>
 
-                                <p className="mt-5 text-slate-600 leading-6">
-                                    {analysis
-                                        .jobRoleMatch
-                                        ?.reason ||
-                                        "No reason available."}
+                                {/* JOB MATCH */}
+
+                                <div className="
+                                    rounded-md
+                                    border
+                                    border-slate-800
+                                    bg-slate-900
+                                    p-5
+                                    sm:p-7
+                                ">
+
+                                    <p className="
+                                        text-xs
+                                        font-semibold
+                                        uppercase
+                                        tracking-wider
+                                        text-slate-500
+                                    ">
+                                        Target Role Match
+                                    </p>
+
+                                    <div className="
+                                        mt-3
+                                        flex
+                                        items-start
+                                        justify-between
+                                        gap-4
+                                    ">
+
+                                        <div className="min-w-0">
+
+                                            <h3 className="
+                                                break-words
+                                                text-lg
+                                                font-bold
+                                                text-white
+                                                sm:text-xl
+                                            ">
+                                                {analysis
+                                                    .jobRoleMatch
+                                                    ?.role ||
+                                                    targetRole}
+                                            </h3>
+
+                                        </div>
+
+                                        <span className="
+                                            shrink-0
+                                            text-3xl
+                                            font-bold
+                                            text-indigo-400
+                                            sm:text-4xl
+                                        ">
+                                            {jobMatchScore}%
+                                        </span>
+
+                                    </div>
+
+                                    <p className="
+                                        mt-5
+                                        text-sm
+                                        leading-6
+                                        text-slate-400
+                                    ">
+                                        {analysis
+                                            .jobRoleMatch
+                                            ?.reason ||
+                                            "No reason available."}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            {/* SUMMARY */}
+
+                            <div className="
+                                mt-4
+                                rounded-md
+                                border
+                                border-slate-800
+                                bg-slate-900
+                                p-5
+                                sm:p-7
+                            ">
+
+                                <h2 className="
+                                    text-lg
+                                    font-bold
+                                    text-white
+                                    sm:text-xl
+                                ">
+                                    📋 Resume Summary
+                                </h2>
+
+                                <p className="
+                                    mt-4
+                                    text-sm
+                                    leading-7
+                                    text-slate-400
+                                ">
+                                    {analysis.summary ||
+                                        "No summary available."}
                                 </p>
 
                             </div>
 
-                        </div>
+                            {/* EXPERIENCE */}
 
-                        {/* =========================
-                SUMMARY
-            ========================== */}
+                            <div className="
+                                mt-4
+                                rounded-md
+                                border
+                                border-slate-800
+                                bg-slate-900
+                                p-5
+                                sm:p-7
+                            ">
 
-                        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8">
+                                <div className="
+                                    flex
+                                    items-center
+                                    justify-between
+                                    gap-4
+                                ">
 
-                            <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-                                📋 Resume Summary
-                            </h2>
+                                    <div className="min-w-0">
 
-                            <p className="mt-4 text-slate-600 leading-7">
-                                {analysis.summary ||
-                                    "No summary available."}
-                            </p>
+                                        <p className="
+                                            text-xs
+                                            font-semibold
+                                            uppercase
+                                            tracking-wider
+                                            text-slate-500
+                                        ">
+                                            Detected Experience
+                                            Level
+                                        </p>
 
-                        </div>
+                                        <h2 className="
+                                            mt-2
+                                            break-words
+                                            text-xl
+                                            font-bold
+                                            text-white
+                                            sm:text-2xl
+                                        ">
+                                            {analysis
+                                                .experienceLevel ||
+                                                "Not detected"}
+                                        </h2>
 
-                        {/* =========================
-                EXPERIENCE LEVEL
-            ========================== */}
+                                    </div>
 
-                        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8">
+                                    <div className="
+                                        flex
+                                        h-11
+                                        w-11
+                                        shrink-0
+                                        items-center
+                                        justify-center
+                                        rounded-md
+                                        bg-indigo-500/10
+                                        text-xl
+                                    ">
+                                        🎓
+                                    </div>
 
-                            <div className="flex items-center justify-between gap-4">
+                                </div>
 
-                                <div>
+                            </div>
 
-                                    <p className="text-sm text-slate-500">
-                                        Detected Experience Level
-                                    </p>
+                            {/* SKILLS */}
 
-                                    <h2 className="text-2xl font-bold text-slate-900 mt-1">
-                                        {analysis
-                                            .experienceLevel ||
-                                            "Not detected"}
+                            <div className="
+                                mt-4
+                                rounded-md
+                                border
+                                border-slate-800
+                                bg-slate-900
+                                p-5
+                                sm:p-7
+                            ">
+
+                                <h2 className="
+                                    text-lg
+                                    font-bold
+                                    text-white
+                                    sm:text-xl
+                                ">
+                                    🛠️ Detected Skills
+                                </h2>
+
+                                <div className="
+                                    mt-4
+                                    flex
+                                    flex-wrap
+                                    gap-2
+                                ">
+
+                                    {analysis.skills?.length > 0 ? (
+                                        analysis.skills.map(
+                                            (
+                                                skill,
+                                                index
+                                            ) => (
+                                                <span
+                                                    key={index}
+                                                    className="
+                                                        rounded-md
+                                                        border
+                                                        border-indigo-500/20
+                                                        bg-indigo-500/10
+                                                        px-3
+                                                        py-1.5
+                                                        text-xs
+                                                        font-semibold
+                                                        text-indigo-300
+                                                    "
+                                                >
+                                                    {skill}
+                                                </span>
+                                            )
+                                        )
+                                    ) : (
+                                        <p className="
+                                            text-sm
+                                            text-slate-500
+                                        ">
+                                            No skills detected.
+                                        </p>
+                                    )}
+
+                                </div>
+
+                            </div>
+
+                            {/* STRENGTHS / WEAKNESSES */}
+
+                            <div className="
+                                mt-4
+                                grid
+                                grid-cols-1
+                                gap-4
+                                lg:grid-cols-2
+                            ">
+
+                                {/* STRENGTHS */}
+
+                                <div className="
+                                    rounded-md
+                                    border
+                                    border-slate-800
+                                    bg-slate-900
+                                    p-5
+                                    sm:p-7
+                                ">
+
+                                    <h2 className="
+                                        text-lg
+                                        font-bold
+                                        text-white
+                                        sm:text-xl
+                                    ">
+                                        💪 Strengths
                                     </h2>
 
+                                    <div className="
+                                        mt-4
+                                        space-y-3
+                                    ">
+
+                                        {analysis.strengths?.length >
+                                        0 ? (
+                                            analysis.strengths.map(
+                                                (
+                                                    item,
+                                                    index
+                                                ) => (
+                                                    <div
+                                                        key={index}
+                                                        className="
+                                                            flex
+                                                            gap-3
+                                                            rounded-md
+                                                            border
+                                                            border-emerald-500/10
+                                                            bg-emerald-500/5
+                                                            p-4
+                                                        "
+                                                    >
+
+                                                        <span className="
+                                                            font-bold
+                                                            text-emerald-400
+                                                        ">
+                                                            ✓
+                                                        </span>
+
+                                                        <p className="
+                                                            min-w-0
+                                                            text-sm
+                                                            leading-6
+                                                            text-slate-400
+                                                        ">
+                                                            {item}
+                                                        </p>
+
+                                                    </div>
+                                                )
+                                            )
+                                        ) : (
+                                            <p className="
+                                                text-sm
+                                                text-slate-500
+                                            ">
+                                                No strengths detected.
+                                            </p>
+                                        )}
+
+                                    </div>
+
                                 </div>
 
-                                <div className="text-3xl">
-                                    🎓
+                                {/* WEAKNESSES */}
+
+                                <div className="
+                                    rounded-md
+                                    border
+                                    border-slate-800
+                                    bg-slate-900
+                                    p-5
+                                    sm:p-7
+                                ">
+
+                                    <h2 className="
+                                        text-lg
+                                        font-bold
+                                        text-white
+                                        sm:text-xl
+                                    ">
+                                        ⚠️ Weaknesses
+                                    </h2>
+
+                                    <div className="
+                                        mt-4
+                                        space-y-3
+                                    ">
+
+                                        {analysis.weaknesses?.length >
+                                        0 ? (
+                                            analysis.weaknesses.map(
+                                                (
+                                                    item,
+                                                    index
+                                                ) => (
+                                                    <div
+                                                        key={index}
+                                                        className="
+                                                            flex
+                                                            gap-3
+                                                            rounded-md
+                                                            border
+                                                            border-orange-500/10
+                                                            bg-orange-500/5
+                                                            p-4
+                                                        "
+                                                    >
+
+                                                        <span className="
+                                                            font-bold
+                                                            text-orange-400
+                                                        ">
+                                                            !
+                                                        </span>
+
+                                                        <p className="
+                                                            min-w-0
+                                                            text-sm
+                                                            leading-6
+                                                            text-slate-400
+                                                        ">
+                                                            {item}
+                                                        </p>
+
+                                                    </div>
+                                                )
+                                            )
+                                        ) : (
+                                            <p className="
+                                                text-sm
+                                                text-slate-500
+                                            ">
+                                                No weaknesses detected.
+                                            </p>
+                                        )}
+
+                                    </div>
+
                                 </div>
 
                             </div>
 
-                        </div>
+                            {/* MISSING SKILLS */}
 
-                        {/* =========================
-                SKILLS
-            ========================== */}
+                            <div className="
+                                mt-4
+                                rounded-md
+                                border
+                                border-slate-800
+                                bg-slate-900
+                                p-5
+                                sm:p-7
+                            ">
 
-                        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8">
-
-                            <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-                                🛠️ Detected Skills
-                            </h2>
-
-                            <div className="flex flex-wrap gap-3 mt-5">
-
-                                {analysis.skills?.length >
-                                    0 ? (
-                                    analysis.skills.map(
-                                        (skill, index) => (
-                                            <span
-                                                key={index}
-                                                className="px-4 py-2 bg-indigo-50 text-indigo-700 rounded-full text-sm font-semibold"
-                                            >
-                                                {skill}
-                                            </span>
-                                        )
-                                    )
-                                ) : (
-                                    <p className="text-slate-500">
-                                        No skills detected.
-                                    </p>
-                                )}
-
-                            </div>
-
-                        </div>
-
-                        {/* =========================
-                STRENGTHS + WEAKNESSES
-            ========================== */}
-
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-                            {/* STRENGTHS */}
-
-                            <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8">
-
-                                <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-                                    💪 Strengths
+                                <h2 className="
+                                    text-lg
+                                    font-bold
+                                    text-white
+                                    sm:text-xl
+                                ">
+                                    🎯 Missing Skills
                                 </h2>
 
-                                <div className="mt-5 space-y-3">
+                                <p className="
+                                    mt-2
+                                    text-xs
+                                    leading-5
+                                    text-slate-500
+                                    sm:text-sm
+                                ">
+                                    Skills that may improve your
+                                    match for the selected job
+                                    role.
+                                </p>
 
-                                    {analysis.strengths?.length >
-                                        0 ? (
-                                        analysis.strengths.map(
+                                <div className="
+                                    mt-4
+                                    flex
+                                    flex-wrap
+                                    gap-2
+                                ">
+
+                                    {analysis.missingSkills?.length >
+                                    0 ? (
+                                        analysis.missingSkills.map(
                                             (
-                                                item,
+                                                skill,
                                                 index
                                             ) => (
-                                                <div
+                                                <span
                                                     key={index}
-                                                    className="flex gap-3 p-4 bg-green-50 border border-green-100 rounded-xl"
+                                                    className="
+                                                        rounded-md
+                                                        border
+                                                        border-red-500/20
+                                                        bg-red-500/10
+                                                        px-3
+                                                        py-1.5
+                                                        text-xs
+                                                        font-semibold
+                                                        text-red-400
+                                                    "
                                                 >
-
-                                                    <span className="text-green-600 font-bold">
-                                                        ✓
-                                                    </span>
-
-                                                    <p className="text-green-800 text-sm sm:text-base">
-                                                        {item}
-                                                    </p>
-
-                                                </div>
+                                                    + {skill}
+                                                </span>
                                             )
                                         )
                                     ) : (
-                                        <p className="text-slate-500">
-                                            No strengths detected.
+                                        <p className="
+                                            text-sm
+                                            font-medium
+                                            text-emerald-400
+                                        ">
+                                            Great! No major missing
+                                            skills detected.
                                         </p>
                                     )}
 
@@ -926,42 +1767,87 @@ function ResumeAnalyzer() {
 
                             </div>
 
-                            {/* WEAKNESSES */}
+                            {/* SUGGESTIONS */}
 
-                            <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8">
+                            <div className="
+                                mt-4
+                                rounded-md
+                                border
+                                border-slate-800
+                                bg-slate-900
+                                p-5
+                                sm:p-7
+                            ">
 
-                                <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-                                    ⚠️ Weaknesses
+                                <h2 className="
+                                    text-lg
+                                    font-bold
+                                    text-white
+                                    sm:text-xl
+                                ">
+                                    🚀 Improvement Suggestions
                                 </h2>
 
-                                <div className="mt-5 space-y-3">
+                                <div className="
+                                    mt-4
+                                    space-y-3
+                                ">
 
-                                    {analysis.weaknesses?.length >
-                                        0 ? (
-                                        analysis.weaknesses.map(
+                                    {analysis.suggestions?.length >
+                                    0 ? (
+                                        analysis.suggestions.map(
                                             (
-                                                item,
+                                                suggestion,
                                                 index
                                             ) => (
                                                 <div
                                                     key={index}
-                                                    className="flex gap-3 p-4 bg-orange-50 border border-orange-100 rounded-xl"
+                                                    className="
+                                                        flex
+                                                        gap-3
+                                                        rounded-md
+                                                        border
+                                                        border-slate-800
+                                                        bg-slate-950
+                                                        p-4
+                                                        sm:p-5
+                                                    "
                                                 >
 
-                                                    <span className="text-orange-600 font-bold">
-                                                        !
-                                                    </span>
+                                                    <div className="
+                                                        flex
+                                                        h-8
+                                                        w-8
+                                                        shrink-0
+                                                        items-center
+                                                        justify-center
+                                                        rounded-md
+                                                        bg-indigo-600
+                                                        text-xs
+                                                        font-bold
+                                                        text-white
+                                                    ">
+                                                        {index + 1}
+                                                    </div>
 
-                                                    <p className="text-orange-800 text-sm sm:text-base">
-                                                        {item}
+                                                    <p className="
+                                                        min-w-0
+                                                        text-sm
+                                                        leading-6
+                                                        text-slate-400
+                                                    ">
+                                                        {suggestion}
                                                     </p>
 
                                                 </div>
                                             )
                                         )
                                     ) : (
-                                        <p className="text-slate-500">
-                                            No weaknesses detected.
+                                        <p className="
+                                            text-sm
+                                            text-slate-500
+                                        ">
+                                            No suggestions available.
                                         </p>
                                     )}
 
@@ -969,135 +1855,73 @@ function ResumeAnalyzer() {
 
                             </div>
 
-                        </div>
+                            {/* BOTTOM ACTIONS */}
 
-                        {/* =========================
-                MISSING SKILLS
-            ========================== */}
+                            <div className="
+                                flex
+                                flex-col
+                                gap-3
+                                py-7
+                                sm:flex-row
+                                sm:justify-center
+                            ">
 
-                        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8">
+                                <button
+                                    type="button"
+                                    onClick={
+                                        handleOpenFullAnalysis
+                                    }
+                                    className="
+                                        w-full
+                                        rounded-md
+                                        bg-indigo-600
+                                        px-7
+                                        py-3
+                                        text-sm
+                                        font-bold
+                                        text-white
+                                        transition
+                                        hover:bg-indigo-500
+                                        sm:w-auto
+                                    "
+                                >
+                                    Open Full Analysis →
+                                </button>
 
-                            <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-                                🎯 Missing Skills
-                            </h2>
-
-                            <p className="text-sm text-slate-500 mt-2">
-                                Skills that may improve your
-                                match for the selected job role.
-                            </p>
-
-                            <div className="flex flex-wrap gap-3 mt-5">
-
-                                {analysis.missingSkills?.length >
-                                    0 ? (
-                                    analysis.missingSkills.map(
-                                        (
-                                            skill,
-                                            index
-                                        ) => (
-                                            <span
-                                                key={index}
-                                                className="px-4 py-2 bg-red-50 text-red-700 border border-red-100 rounded-full text-sm font-semibold"
-                                            >
-                                                + {skill}
-                                            </span>
-                                        )
-                                    )
-                                ) : (
-                                    <p className="text-green-600 font-medium">
-                                        Great! No major missing
-                                        skills detected.
-                                    </p>
-                                )}
-
-                            </div>
-
-                        </div>
-
-                        {/* =========================
-                SUGGESTIONS
-            ========================== */}
-
-                        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8">
-
-                            <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-                                🚀 Improvement Suggestions
-                            </h2>
-
-                            <div className="mt-5 space-y-4">
-
-                                {analysis.suggestions?.length >
-                                    0 ? (
-                                    analysis.suggestions.map(
-                                        (
-                                            suggestion,
-                                            index
-                                        ) => (
-                                            <div
-                                                key={index}
-                                                className="flex gap-4 p-4 sm:p-5 bg-slate-50 border border-slate-100 rounded-2xl"
-                                            >
-
-                                                <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0">
-                                                    {index + 1}
-                                                </div>
-
-                                                <p className="text-slate-700 leading-6">
-                                                    {suggestion}
-                                                </p>
-
-                                            </div>
-                                        )
-                                    )
-                                ) : (
-                                    <p className="text-slate-500">
-                                        No suggestions available.
-                                    </p>
-                                )}
+                                <button
+                                    type="button"
+                                    onClick={
+                                        handleNewAnalysis
+                                    }
+                                    className="
+                                        w-full
+                                        rounded-md
+                                        border
+                                        border-slate-700
+                                        bg-slate-900
+                                        px-7
+                                        py-3
+                                        text-sm
+                                        font-semibold
+                                        text-slate-300
+                                        transition
+                                        hover:border-slate-600
+                                        hover:bg-slate-800
+                                        sm:w-auto
+                                    "
+                                >
+                                    Analyze Another Resume
+                                </button>
 
                             </div>
 
                         </div>
 
-                        {/* =========================
-                FULL ANALYSIS BUTTON
-            ========================== */}
-
-                        <div className="flex flex-col sm:flex-row justify-center gap-4 py-6">
-
-                            <button
-                                onClick={
-                                    handleOpenFullAnalysis
-                                }
-                                className="px-7 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition"
-                            >
-                                Open Full Analysis →
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    setAnalysis(null);
-                                    setResume(null);
-                                    setFile(null);
-                                    setMessage("");
-                                    setError("");
-
-                                    window.scrollTo({
-                                        top: 0,
-                                        behavior: "smooth",
-                                    });
-                                }}
-                                className="px-7 py-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold transition"
-                            >
-                                Analyze Another Resume
-                            </button>
-
-                        </div>
-
-                    </div>
+                    </section>
                 )}
 
-            </div>
+            </main>
+
         </div>
     );
 }

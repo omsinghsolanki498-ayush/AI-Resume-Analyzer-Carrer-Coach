@@ -1,24 +1,846 @@
-import { useState } from "react";
+
+
+// import { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+
+// import DashboardSidebar from "../Components/DashboardSidebar";
+// import StatCard from "../Components/StatCard";
+// import ResumeList from "../Components/ResumeList";
+// import Footer from "../Components/Footer";
+
+// import { useDashboard } from "../context/DashboardContext";
+
+// function Dashboard() {
+//     const navigate = useNavigate();
+
+//     const [mobileMenu, setMobileMenu] = useState(false);
+
+//     const dashboard = useDashboard();
+
+//     const resumes = Array.isArray(dashboard?.resumes)
+//         ? dashboard.resumes
+//         : [];
+
+//     const loading = dashboard?.loading ?? false;
+//     const error = dashboard?.error ?? "";
+
+//     const averageScore = dashboard?.averageScore ?? 0;
+//     const totalSkills = dashboard?.totalSkills ?? 0;
+
+//     const experience =
+//         dashboard?.experience || "Not detected";
+
+//     const deleteResume = dashboard?.deleteResume;
+//     const refreshResumes = dashboard?.refreshResumes;
+
+//     const goToAnalyzer = () => {
+//         navigate("/resume-analyzer");
+//     };
+
+//     /* =========================================================
+//        LOADING STATE
+//     ========================================================= */
+
+//     if (loading) {
+//         return (
+//             <div className="flex min-h-screen flex-col bg-[#f7f8fc] text-slate-900">
+
+//                 {/* Navbar */}
+//                 <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 backdrop-blur-xl">
+//                     <DashboardSidebar
+//                         onMenuClick={() => setMobileMenu(true)}
+//                     />
+//                 </header>
+
+//                 {/* Mobile Sidebar */}
+//                 {mobileMenu && (
+//                     <div className="fixed inset-0 z-[100]">
+
+//                         <button
+//                             type="button"
+//                             aria-label="Close menu"
+//                             onClick={() => setMobileMenu(false)}
+//                             className="absolute inset-0 bg-slate-950/50 backdrop-blur-sm"
+//                         />
+
+//                         <aside className="absolute left-0 top-0 h-full w-[280px] max-w-[88vw] overflow-y-auto bg-white shadow-2xl">
+//                             <DashboardSidebar
+//                                 mobile
+//                                 onClose={() => setMobileMenu(false)}
+//                             />
+//                         </aside>
+
+//                     </div>
+//                 )}
+
+//                 {/* Skeleton */}
+//                 <main className="mx-auto w-full max-w-7xl flex-1 px-3 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+
+//                     <div className="animate-pulse">
+
+//                         <div className="h-3 w-20 rounded-full bg-slate-200" />
+
+//                         <div className="mt-4 h-8 w-56 rounded-lg bg-slate-200 sm:h-10 sm:w-72" />
+
+//                         <div className="mt-3 h-4 w-full max-w-lg rounded bg-slate-200" />
+
+//                         {/* Stats skeleton */}
+//                         <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
+
+//                             {[1, 2, 3, 4].map((item) => (
+//                                 <div
+//                                     key={item}
+//                                     className="h-[120px] rounded-2xl bg-slate-200 sm:h-[130px]"
+//                                 />
+//                             ))}
+
+//                         </div>
+
+//                         {/* Resume skeleton */}
+//                         <div className="mt-8 h-64 rounded-2xl bg-slate-200" />
+
+//                     </div>
+
+//                 </main>
+
+//                 <footer className="border-t border-slate-200 bg-white">
+
+//                     <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+//                         <Footer />
+//                     </div>
+
+//                 </footer>
+
+//             </div>
+//         );
+//     }
+
+//     /* =========================================================
+//        MAIN DASHBOARD
+//     ========================================================= */
+
+//     return (
+//         <div className="min-h-screen w-full overflow-x-hidden bg-slate-950 text-slate-300">
+
+//             {/* ================= HEADER ================= */}
+
+//             <header className="sticky top-0 z-50 border-b border-slate-800/70 bg-slate-950/95 backdrop-blur-xl">
+
+//                 <div
+//                     className="
+//                         mx-auto
+//                         flex
+//                         h-14
+//                         w-full
+//                         max-w-6xl
+//                         items-center
+//                         justify-between
+//                         px-4
+//                         sm:h-16
+//                         sm:px-6
+//                         lg:px-8
+//                     "
+//                 >
+
+//                     {/* LOGO */}
+
+//                     <button
+//                         type="button"
+//                         onClick={() => navigate("/")}
+//                         className="flex items-center gap-2"
+//                     >
+
+//                         <span
+//                             className="
+//                                 flex
+//                                 h-8
+//                                 w-8
+//                                 items-center
+//                                 justify-center
+//                                 rounded-lg
+//                                 bg-indigo-600
+//                                 text-xs
+//                                 font-bold
+//                                 text-white
+//                                 sm:h-9
+//                                 sm:w-9
+//                                 sm:text-sm
+//                             "
+//                         >
+//                             R
+//                         </span>
+
+//                         <span className="text-base font-bold text-white sm:text-lg">
+//                             Resume
+//                             <span className="text-indigo-400">
+//                                 AI
+//                             </span>
+//                         </span>
+
+//                     </button>
+
+                
+
+//                 </div>
+
+//             </header>
+
+//             {/* ================= MAIN ================= */}
+
+//             <main className="w-full">
+
+//                 {/* ================= DASHBOARD INTRO ================= */}
+
+//                 <section className="w-full px-4 pt-8 sm:px-6 sm:pt-10 lg:px-8">
+
+//                     <div className="mx-auto w-full max-w-6xl">
+
+//                         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+
+//                             {/* INTRO TEXT */}
+
+//                             <div className="text-center sm:text-left">
+
+//                                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-indigo-400 sm:text-xs">
+//                                     Dashboard
+//                                 </p>
+
+//                                 <h1 className="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">
+//                                     Welcome to your career dashboard
+//                                 </h1>
+
+//                                 <p className="mx-auto mt-2 max-w-xl text-xs leading-5 text-slate-400 sm:mx-0 sm:text-sm sm:leading-6">
+//                                     Analyze your resume, improve your ATS score and
+//                                     build a stronger career profile with AI.
+//                                 </p>
+
+//                             </div>
+
+//                             {/* RESUME COUNT */}
+
+//                             <div className="flex justify-center sm:justify-end">
+
+//                                 <div className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900 px-3 py-1.5 text-[10px] font-medium text-slate-400 sm:text-xs">
+
+//                                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+
+//                                     {resumes.length} resume
+//                                     {resumes.length === 1 ? "" : "s"} analyzed
+
+//                                 </div>
+
+//                             </div>
+
+//                         </div>
+
+//                     </div>
+
+//                 </section>
+
+//                 {/* ================= HERO ================= */}
+
+//                 <section
+//                     className="
+//                         relative
+//                         flex
+//                         min-h-[calc(100vh-56px)]
+//                         w-full
+//                         items-center
+//                         justify-center
+//                         overflow-hidden
+//                         sm:min-h-[calc(100vh-64px)]
+//                     "
+//                 >
+
+//                     {/* BACKGROUND GLOW */}
+
+//                     <div
+//                         className="
+//                             pointer-events-none
+//                             absolute
+//                             left-1/2
+//                             top-0
+//                             h-48
+//                             w-48
+//                             -translate-x-1/2
+//                             rounded-full
+//                             bg-indigo-600/15
+//                             blur-[80px]
+//                             sm:h-64
+//                             sm:w-64
+//                             lg:h-80
+//                             lg:w-80
+//                         "
+//                     />
+
+//                     {/* HERO CONTENT */}
+
+//                     <div
+//                         className="
+//                             relative
+//                             z-10
+//                             mx-auto
+//                             flex
+//                             w-full
+//                             max-w-5xl
+//                             flex-col
+//                             items-center
+//                             justify-center
+//                             px-4
+//                             py-10
+//                             text-center
+//                             sm:px-6
+//                             sm:py-12
+//                             md:py-14
+//                             lg:px-8
+//                             lg:py-16
+//                         "
+//                     >
+
+//                         {/* ================= BADGE ================= */}
+
+//                         <div
+//                             className="
+//                                 inline-flex
+//                                 items-center
+//                                 gap-1.5
+//                                 rounded-full
+//                                 bg-indigo-500/10
+//                                 px-3
+//                                 py-1.5
+//                                 text-[9px]
+//                                 font-semibold
+//                                 uppercase
+//                                 tracking-wider
+//                                 text-indigo-300
+//                                 ring-1
+//                                 ring-indigo-500/20
+//                                 sm:text-[10px]
+//                                 md:text-[11px]
+//                             "
+//                         >
+
+//                             <span
+//                                 className="
+//                                     h-1.5
+//                                     w-1.5
+//                                     rounded-full
+//                                     bg-indigo-400
+//                                 "
+//                             />
+
+//                             AI-powered career toolkit
+
+//                         </div>
+
+//                         {/* ================= HEADING ================= */}
+
+//                         <h2
+//                             className="
+//                                 mt-4
+//                                 w-full
+//                                 max-w-3xl
+//                                 text-center
+//                                 text-[27px]
+//                                 font-bold
+//                                 leading-[1.12]
+//                                 tracking-tight
+//                                 text-slate-50
+//                                 sm:mt-5
+//                                 sm:text-3xl
+//                                 md:text-4xl
+//                                 lg:text-5xl
+//                             "
+//                         >
+
+//                             Your resume,
+
+//                             <span className="block">
+
+//                                 read the{" "}
+
+//                                 <span
+//                                     className="
+//                                         bg-gradient-to-r
+//                                         from-indigo-400
+//                                         to-violet-400
+//                                         bg-clip-text
+//                                         text-transparent
+//                                     "
+//                                 >
+//                                     way recruiters
+//                                 </span>{" "}
+
+//                                 read it.
+
+//                             </span>
+
+//                         </h2>
+
+//                         {/* ================= DESCRIPTION ================= */}
+
+//                         <p
+//                             className="
+//                                 mt-3
+//                                 w-full
+//                                 max-w-xl
+//                                 text-center
+//                                 text-[11px]
+//                                 leading-5
+//                                 text-slate-500
+//                                 sm:mt-4
+//                                 sm:text-sm
+//                                 sm:leading-6
+//                             "
+//                         >
+//                             ResumeAI analyzes your resume, finds improvement
+//                             opportunities and helps you make better career
+//                             decisions with AI.
+//                         </p>
+
+//                         {/* ================= RESUME ANALYSIS ================= */}
+
+//                         <div
+//                             className="
+//                                 mt-8
+//                                 flex
+//                                 w-full
+//                                 justify-center
+//                                 px-3
+//                                 sm:mt-10
+//                                 sm:px-0
+//                             "
+//                         >
+
+//                             <div
+//                                 className="
+//                                     w-full
+//                                     max-w-[330px]
+//                                     rounded-2xl
+//                                     border
+//                                     border-slate-700/70
+//                                     bg-slate-900
+//                                     p-3
+//                                     text-left
+//                                     shadow-2xl
+//                                     shadow-black/40
+//                                     sm:max-w-[420px]
+//                                     sm:p-4
+//                                 "
+//                             >
+
+//                                 {/* ================= TOP BAR ================= */}
+
+//                                 <div
+//                                     className="
+//                                         flex
+//                                         items-center
+//                                         justify-between
+//                                         border-b
+//                                         border-slate-800
+//                                         pb-3
+//                                     "
+//                                 >
+
+//                                     <div className="flex items-center gap-2">
+
+//                                         <div
+//                                             className="
+//                                                 flex
+//                                                 h-7
+//                                                 w-7
+//                                                 items-center
+//                                                 justify-center
+//                                                 rounded-md
+//                                                 bg-indigo-500/10
+//                                                 text-xs
+//                                                 font-bold
+//                                                 text-indigo-400
+//                                                 ring-1
+//                                                 ring-indigo-500/20
+//                                             "
+//                                         >
+//                                             R
+//                                         </div>
+
+//                                         <div>
+
+//                                             <div className="h-2 w-20 rounded-full bg-slate-300" />
+
+//                                             <div className="mt-1.5 h-1.5 w-14 rounded-full bg-slate-700" />
+
+//                                         </div>
+
+//                                     </div>
+
+//                                     <span
+//                                         className="
+//                                             rounded-md
+//                                             bg-emerald-500/10
+//                                             px-2
+//                                             py-1
+//                                             text-[8px]
+//                                             font-semibold
+//                                             text-emerald-400
+//                                             ring-1
+//                                             ring-emerald-500/20
+//                                             sm:text-[9px]
+//                                         "
+//                                     >
+//                                         ANALYZED
+//                                     </span>
+
+//                                 </div>
+
+//                                 {/* ================= SCORE + ANALYSIS ================= */}
+
+//                                 <div
+//                                     className="
+//                                         mt-4
+//                                         grid
+//                                         grid-cols-1
+//                                         gap-3
+//                                         sm:grid-cols-[105px_1fr]
+//                                     "
+//                                 >
+
+//                                     {/* ATS SCORE */}
+
+//                                     <div
+//                                         className="
+//                                             flex
+//                                             flex-col
+//                                             items-center
+//                                             justify-center
+//                                             rounded-xl
+//                                             border
+//                                             border-slate-800
+//                                             bg-slate-950/70
+//                                             p-3
+//                                         "
+//                                     >
+
+//                                         <div
+//                                             className="
+//                                                 flex
+//                                                 h-16
+//                                                 w-16
+//                                                 items-center
+//                                                 justify-center
+//                                                 rounded-full
+//                                                 border-[5px]
+//                                                 border-emerald-500
+//                                                 sm:h-[70px]
+//                                                 sm:w-[70px]
+//                                             "
+//                                         >
+
+//                                             <span
+//                                                 className="
+//                                                     text-lg
+//                                                     font-bold
+//                                                     text-emerald-400
+//                                                     sm:text-xl
+//                                                 "
+//                                             >
+//                                                 92
+//                                             </span>
+
+//                                         </div>
+
+//                                         <span
+//                                             className="
+//                                                 mt-2
+//                                                 text-[8px]
+//                                                 font-semibold
+//                                                 uppercase
+//                                                 tracking-wider
+//                                                 text-slate-500
+//                                             "
+//                                         >
+//                                             ATS Score
+//                                         </span>
+
+//                                         <span className="mt-1 text-[8px] text-emerald-400">
+//                                             Excellent
+//                                         </span>
+
+//                                     </div>
+
+//                                     {/* ANALYSIS DETAILS */}
+
+//                                     <div className="space-y-2.5">
+
+//                                         {/* KEYWORD MATCH */}
+
+//                                         <div>
+
+//                                             <div className="mb-1 flex items-center justify-between">
+
+//                                                 <span className="text-[9px] font-medium text-slate-400">
+//                                                     Keyword Match
+//                                                 </span>
+
+//                                                 <span className="text-[9px] font-semibold text-indigo-400">
+//                                                     94%
+//                                                 </span>
+
+//                                             </div>
+
+//                                             <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">
+
+//                                                 <div className="h-full w-[94%] rounded-full bg-indigo-500" />
+
+//                                             </div>
+
+//                                         </div>
+
+//                                         {/* EXPERIENCE */}
+
+//                                         <div>
+
+//                                             <div className="mb-1 flex items-center justify-between">
+
+//                                                 <span className="text-[9px] font-medium text-slate-400">
+//                                                     Experience
+//                                                 </span>
+
+//                                                 <span className="text-[9px] font-semibold text-emerald-400">
+//                                                     Strong
+//                                                 </span>
+
+//                                             </div>
+
+//                                             <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">
+
+//                                                 <div className="h-full w-[88%] rounded-full bg-emerald-500" />
+
+//                                             </div>
+
+//                                         </div>
+
+//                                         {/* FORMATTING */}
+
+//                                         <div>
+
+//                                             <div className="mb-1 flex items-center justify-between">
+
+//                                                 <span className="text-[9px] font-medium text-slate-400">
+//                                                     Formatting
+//                                                 </span>
+
+//                                                 <span className="text-[9px] font-semibold text-amber-400">
+//                                                     Good
+//                                                 </span>
+
+//                                             </div>
+
+//                                             <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">
+
+//                                                 <div className="h-full w-[82%] rounded-full bg-amber-500" />
+
+//                                             </div>
+
+//                                         </div>
+
+//                                     </div>
+
+//                                 </div>
+
+//                                 {/* ================= RESUME SECTIONS ================= */}
+
+//                                 <div className="mt-4 grid grid-cols-2 gap-2">
+
+//                                     {/* SKILLS */}
+
+//                                     <div
+//                                         className="
+//                                             rounded-lg
+//                                             border
+//                                             border-slate-800
+//                                             bg-slate-950/60
+//                                             p-2.5
+//                                         "
+//                                     >
+
+//                                         <div className="flex items-center justify-between">
+
+//                                             <span className="text-[8px] font-semibold text-slate-400">
+//                                                 Skills
+//                                             </span>
+
+//                                             <span className="text-[8px] text-emerald-400">
+//                                                 ✓
+//                                             </span>
+
+//                                         </div>
+
+//                                         <div className="mt-2 flex gap-1">
+
+//                                             <span className="h-1.5 w-10 rounded-full bg-slate-700" />
+
+//                                             <span className="h-1.5 w-6 rounded-full bg-slate-700" />
+
+//                                         </div>
+
+//                                     </div>
+
+//                                     {/* EXPERIENCE */}
+
+//                                     <div
+//                                         className="
+//                                             rounded-lg
+//                                             border
+//                                             border-slate-800
+//                                             bg-slate-950/60
+//                                             p-2.5
+//                                         "
+//                                     >
+
+//                                         <div className="flex items-center justify-between">
+
+//                                             <span className="text-[8px] font-semibold text-slate-400">
+//                                                 Experience
+//                                             </span>
+
+//                                             <span className="text-[8px] text-emerald-400">
+//                                                 ✓
+//                                             </span>
+
+//                                         </div>
+
+//                                         <div className="mt-2 flex gap-1">
+
+//                                             <span className="h-1.5 w-12 rounded-full bg-slate-700" />
+
+//                                             <span className="h-1.5 w-5 rounded-full bg-slate-700" />
+
+//                                         </div>
+
+//                                     </div>
+
+//                                 </div>
+
+//                                 {/* ================= AI RECOMMENDATION ================= */}
+
+//                                 <div
+//                                     className="
+//                                         mt-3
+//                                         rounded-lg
+//                                         border
+//                                         border-amber-500/20
+//                                         bg-amber-500/5
+//                                         p-2.5
+//                                     "
+//                                 >
+
+//                                     <div className="flex items-start gap-2">
+
+//                                         <span
+//                                             className="
+//                                                 flex
+//                                                 h-5
+//                                                 w-5
+//                                                 shrink-0
+//                                                 items-center
+//                                                 justify-center
+//                                                 rounded
+//                                                 bg-amber-500/10
+//                                                 text-[9px]
+//                                                 text-amber-400
+//                                             "
+//                                         >
+//                                             !
+//                                         </span>
+
+//                                         <div>
+
+//                                             <p
+//                                                 className="
+//                                                     text-[8px]
+//                                                     font-semibold
+//                                                     text-amber-300
+//                                                     sm:text-[9px]
+//                                                 "
+//                                             >
+//                                                 AI Recommendation
+//                                             </p>
+
+//                                             <p
+//                                                 className="
+//                                                     mt-0.5
+//                                                     text-[8px]
+//                                                     leading-4
+//                                                     text-slate-500
+//                                                 "
+//                                             >
+//                                                 Add measurable achievements
+//                                                 to strengthen your experience
+//                                                 section.
+//                                             </p>
+
+//                                         </div>
+
+//                                     </div>
+
+//                                 </div>
+
+//                                 {/* ================= BOTTOM ================= */}
+
+//                                 <div
+//                                     className="
+//                                         mt-3
+//                                         flex
+//                                         items-center
+//                                         justify-between
+//                                         border-t
+//                                         border-slate-800
+//                                         pt-3
+//                                     "
+//                                 >
+
+//                                     <span className="text-[8px] text-slate-600">
+//                                         Resume Analysis
+//                                     </span>
+
+//                                     <span className="text-[8px] font-medium text-indigo-400">
+//                                         AI Powered
+//                                     </span>
+
+//                                 </div>
+
+//                             </div>
+
+//                         </div>
+
+//                     </div>
+
+//                 </section>
+
+//             </main>
+
+//             {/* ================= FOOTER ================= */}
+
+//             <Footer />
+
+//         </div>
+//     );
+// }
+
+// export default Dashboard;
+
+
+
+
 import { useNavigate } from "react-router-dom";
 
 import DashboardSidebar from "../Components/DashboardSidebar";
-import DashboardTopbar from "../Components/DashboardTopbar";
-import StatCard from "../Components/StatCard";
-import CareerToolCard from "../Components/CareerToolCard";
-import JobMatchBanner from "../Components/JobMatchBanner";
-import ResumeList from "../Components/ResumeList";
-import EmptyResume from "../Components/EmptyResume";
+import Footer from "../Components/Footer";
 
 import { useDashboard } from "../context/DashboardContext";
 
 function Dashboard() {
     const navigate = useNavigate();
-
-    const [mobileMenu, setMobileMenu] = useState(false);
-
-    // =========================================
-    // DASHBOARD CONTEXT
-    // =========================================
 
     const dashboard = useDashboard();
 
@@ -27,416 +849,743 @@ function Dashboard() {
         : [];
 
     const loading = dashboard?.loading ?? false;
-
     const error = dashboard?.error ?? "";
 
-    const averageScore =
-        dashboard?.averageScore ?? 0;
-
-    const totalSkills =
-        dashboard?.totalSkills ?? 0;
+    const averageScore = dashboard?.averageScore ?? 0;
+    const totalSkills = dashboard?.totalSkills ?? 0;
 
     const experience =
-        dashboard?.experience ?? "Not detected";
+        dashboard?.experience || "Not detected";
 
-    const deleteResume =
-        dashboard?.deleteResume;
+    const deleteResume = dashboard?.deleteResume;
+    const refreshResumes = dashboard?.refreshResumes;
 
-    const refreshResumes =
-        dashboard?.refreshResumes;
+    const goToAnalyzer = () => {
+        navigate("/resume-analyzer");
+    };
 
-
-    // =========================================
-    // LOADING
-    // =========================================
+    /* =========================================================
+       LOADING STATE
+    ========================================================= */
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#f7f8fc]">
+            <div className="min-h-screen w-full bg-slate-950 text-slate-300">
 
-                {/* Desktop Sidebar */}
+                {/* SIDEBAR / NAVBAR */}
+                <DashboardSidebar />
 
-                <div className="hidden lg:block fixed left-0 top-0 bottom-0 w-[240px] bg-white border-r border-slate-200">
+                {/* LOADING CONTENT */}
+                <main className="w-full">
+                    <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
 
-                    <DashboardSidebar />
+                        <div className="animate-pulse">
 
-                </div>
+                            <div className="h-3 w-20 rounded-full bg-slate-800" />
 
+                            <div className="mt-4 h-8 w-56 rounded-lg bg-slate-800 sm:h-10 sm:w-72" />
 
-                {/* Main */}
+                            <div className="mt-3 h-4 w-full max-w-lg rounded bg-slate-800" />
 
-                <div className="lg:ml-[240px]">
-
-                    <div className="h-[72px] bg-white border-b border-slate-200" />
-
-                    <main className="p-4 sm:p-6 lg:p-8">
-
-                        <div className="max-w-[1400px] mx-auto animate-pulse">
-
-                            <div className="h-8 w-64 bg-slate-200 rounded mb-3" />
-
-                            <div className="h-4 w-96 max-w-full bg-slate-200 rounded mb-8" />
-
-
-                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-
+                            {/* Stats */}
+                            <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
                                 {[1, 2, 3, 4].map((item) => (
                                     <div
                                         key={item}
-                                        className="h-32 bg-white rounded-2xl border border-slate-200"
+                                        className="h-[120px] rounded-2xl bg-slate-800 sm:h-[130px]"
                                     />
                                 ))}
-
                             </div>
+
+                            {/* Resume */}
+                            <div className="mt-8 h-64 rounded-2xl bg-slate-800" />
 
                         </div>
 
-                    </main>
+                    </div>
+                </main>
 
-                </div>
+                <Footer />
 
             </div>
         );
     }
 
-
-    // =========================================
-    // MAIN DASHBOARD
-    // =========================================
+    /* =========================================================
+       MAIN DASHBOARD
+    ========================================================= */
 
     return (
-        <div className="min-h-screen bg-[#f7f8fc] overflow-x-hidden">
+        <div className="min-h-screen w-full overflow-x-hidden bg-slate-950 text-slate-300">
 
-            {/* =================================
-                DESKTOP SIDEBAR
-            ================================= */}
+            {/* =================================================
+               SIDEBAR / NAVBAR
+            ================================================= */}
 
-            <aside className="hidden lg:block fixed left-0 top-0 bottom-0 w-[240px] border-r border-slate-200 z-40">
+            <DashboardSidebar />
 
-                <DashboardSidebar />
+            {/* =================================================
+               MAIN
+            ================================================= */}
 
-            </aside>
+            <main className="w-full">
 
+                {/* =================================================
+                   DASHBOARD INTRO
+                ================================================= */}
 
-            {/* =================================
-                MOBILE SIDEBAR
-            ================================= */}
+                <section className="w-full px-4 pt-8 sm:px-6 sm:pt-10 lg:px-8">
 
-            {mobileMenu && (
-                <>
-                    <div
-                        onClick={() => setMobileMenu(false)}
-                        className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 lg:hidden"
-                    />
+                    <div className="mx-auto w-full max-w-6xl">
 
-                    <aside className="fixed left-0 top-0 bottom-0 w-[280px] bg-white z-[60] shadow-2xl lg:hidden">
+                        <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
 
-                        <DashboardSidebar
-                            mobile={true}
-                            onClose={() =>
-                                setMobileMenu(false)
-                            }
-                        />
+                            {/* INTRO TEXT */}
 
-                    </aside>
-                </>
-            )}
+                            <div className="text-center sm:text-left">
 
-
-            {/* =================================
-                MAIN CONTENT
-            ================================= */}
-
-            <div className="lg:ml-[240px] min-h-screen min-w-0">
-
-                <DashboardTopbar
-                    onMenuClick={() =>
-                        setMobileMenu(true)
-                    }
-                />
-
-
-                <main className="px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
-
-                    <div className="max-w-[1400px] mx-auto min-w-0">
-
-
-                        {/* =================================
-                            HERO
-                        ================================= */}
-
-                        <section className="mb-8">
-
-                            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5">
-
-                                <div>
-
-                                    <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-600 text-[10px] sm:text-xs font-bold tracking-wide uppercase mb-3">
-
-                                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-600" />
-
-                                        AI Career Platform
-
-                                    </div>
-
-
-                                    <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-bold tracking-tight text-slate-900">
-                                        Welcome back
-                                    </h1>
-
-
-                                    <p className="mt-2 text-sm sm:text-base text-slate-500 max-w-2xl leading-6">
-
-                                        Analyze your resume, improve your
-                                        skills, and build a clear path toward
-                                        your dream career.
-
-                                    </p>
-
-                                </div>
-
-
-                                {/* Mobile Upload */}
-
-                                <button
-                                    onClick={() =>
-                                        navigate(
-                                            "/resume-analyzer"
-                                        )
-                                    }
-                                    className="sm:hidden w-full bg-indigo-600 text-white rounded-xl py-3 font-semibold"
-                                >
-                                    + Upload Resume
-                                </button>
-
-                            </div>
-
-                        </section>
-
-
-                        {/* =================================
-                            ERROR
-                        ================================= */}
-
-                        {error && (
-                            <div className="mb-6 bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-
-                                <p className="text-sm text-red-600">
-                                    {error}
+                                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-indigo-400 sm:text-xs">
+                                    Dashboard
                                 </p>
 
+                                <h1 className="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">
+                                    Welcome to your career dashboard
+                                </h1>
 
-                                <button
-                                    onClick={
-                                        refreshResumes
-                                    }
-                                    className="text-sm font-semibold text-red-700 underline"
-                                >
-                                    Try again
-                                </button>
-
-                            </div>
-                        )}
-
-
-                        {/* =================================
-                            STATS
-                        ================================= */}
-
-                        <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
-
-                            <StatCard
-                                icon="▤"
-                                iconClass="bg-indigo-50 text-indigo-600"
-                                label="RESUMES"
-                                value={resumes.length}
-                                description="Uploaded resumes"
-                            />
-
-
-                            <StatCard
-                                icon="✓"
-                                iconClass="bg-emerald-50 text-emerald-600"
-                                label="ATS"
-                                value={`${averageScore}%`}
-                                description="Average score"
-                            />
-
-
-                            <StatCard
-                                icon="✦"
-                                iconClass="bg-violet-50 text-violet-600"
-                                label="SKILLS"
-                                value={totalSkills}
-                                description="Skills detected"
-                            />
-
-
-                            <StatCard
-                                icon="★"
-                                iconClass="bg-amber-50 text-amber-600"
-                                label="LEVEL"
-                                value={experience}
-                                description="Experience level"
-                            />
-
-                        </section>
-
-
-                        {/* =================================
-                            CAREER TOOLS
-                        ================================= */}
-
-                        <section className="mb-8">
-
-                            <div className="mb-4">
-
-                                <h2 className="text-lg sm:text-xl font-bold text-slate-900">
-                                    Career tools
-                                </h2>
-
-                                <p className="text-sm text-slate-500 mt-1">
-                                    Everything you need to improve your career.
+                                <p className="mx-auto mt-2 max-w-xl text-xs leading-5 text-slate-400 sm:mx-0 sm:text-sm sm:leading-6">
+                                    Analyze your resume, improve your ATS score
+                                    and build a stronger career profile with AI.
                                 </p>
 
                             </div>
 
+                            {/* RESUME COUNT */}
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                            <div className="flex justify-center sm:justify-end">
 
+                                <div className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900 px-3 py-1.5 text-[10px] font-medium text-slate-400 sm:text-xs">
 
-                                {/* Resume Analyzer */}
-
-                                <CareerToolCard
-                                    icon="CV"
-                                    iconClass="bg-indigo-50 text-indigo-600"
-                                    title="Resume Analyzer"
-                                    description="Get your ATS score, strengths, weaknesses and improvement suggestions."
-                                    onClick={() =>
-                                        navigate(
-                                            "/resume-analyzer"
-                                        )
-                                    }
-                                />
-
-
-                                {/* Career Coach */}
-
-                                <CareerToolCard
-                                    icon="AI"
-                                    iconClass="bg-violet-50 text-violet-600"
-                                    title="AI Career Coach"
-                                    description="Ask questions about jobs, interviews, skills and career growth."
-                                    onClick={() =>
-                                        navigate(
-                                            "/career-coach"
-                                        )
-                                    }
-                                />
-
-
-                                {/* Roadmap */}
-
-                                <CareerToolCard
-                                    icon="90"
-                                    iconClass="bg-emerald-50 text-emerald-600"
-                                    title="Career Roadmap"
-                                    description="Follow a personalized roadmap based on your skills and target role."
-                                    onClick={() =>
-                                        navigate(
-                                            "/roadmap"
-                                        )
-                                    }
-                                />
-
-                            </div>
-
-                        </section>
-
-
-                        {/* =================================
-                            JOB MATCH
-                        ================================= */}
-
-                        <JobMatchBanner />
-
-
-                        {/* =================================
-                            RESUMES
-                        ================================= */}
-
-                        <section>
-
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
-
-                                <div>
-
-                                    <h2 className="text-lg sm:text-xl font-bold text-slate-900">
-                                        Your resumes
-                                    </h2>
-
-                                    <p className="text-sm text-slate-500 mt-1">
-                                        Review your uploaded resumes and analysis.
-                                    </p>
-
-                                </div>
-
-
-                                <span className="text-xs text-slate-400">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
 
                                     {resumes.length} resume
-                                    {resumes.length !== 1
-                                        ? "s"
-                                        : ""}
+                                    {resumes.length === 1 ? "" : "s"} analyzed
 
-                                </span>
+                                </div>
 
                             </div>
 
-
-                            {resumes.length === 0 ? (
-
-                                <EmptyResume />
-
-                            ) : (
-
-                                <ResumeList
-                                    resumes={resumes}
-                                    onDelete={
-                                        deleteResume
-                                    }
-                                />
-
-                            )}
-
-                        </section>
-
-
-                        {/* =================================
-                            FOOTER
-                        ================================= */}
-
-                        <footer className="py-8 text-center">
-
-                            <p className="text-xs text-slate-400">
-                                ResumeAI · AI-powered career assistant
-                            </p>
-
-                        </footer>
+                        </div>
 
                     </div>
 
-                </main>
+                </section>
 
-            </div>
+                {/* =================================================
+                   HERO
+                ================================================= */}
+
+                <section
+                    className="
+                        relative
+                        flex
+                        min-h-[calc(100vh-56px)]
+                        w-full
+                        items-center
+                        justify-center
+                        overflow-hidden
+                        sm:min-h-[calc(100vh-64px)]
+                    "
+                >
+
+                    {/* BACKGROUND GLOW */}
+
+                    <div
+                        className="
+                            pointer-events-none
+                            absolute
+                            left-1/2
+                            top-0
+                            h-48
+                            w-48
+                            -translate-x-1/2
+                            rounded-full
+                            bg-indigo-600/15
+                            blur-[80px]
+                            sm:h-64
+                            sm:w-64
+                            lg:h-80
+                            lg:w-80
+                        "
+                    />
+
+                    {/* HERO CONTENT */}
+
+                    <div
+                        className="
+                            relative
+                            z-10
+                            mx-auto
+                            flex
+                            w-full
+                            max-w-5xl
+                            flex-col
+                            items-center
+                            justify-center
+                            px-4
+                            py-10
+                            text-center
+                            sm:px-6
+                            sm:py-12
+                            md:py-14
+                            lg:px-8
+                            lg:py-16
+                        "
+                    >
+
+                        {/* BADGE */}
+
+                        <div
+                            className="
+                                inline-flex
+                                items-center
+                                gap-1.5
+                                rounded-full
+                                bg-indigo-500/10
+                                px-3
+                                py-1.5
+                                text-[9px]
+                                font-semibold
+                                uppercase
+                                tracking-wider
+                                text-indigo-300
+                                ring-1
+                                ring-indigo-500/20
+                                sm:text-[10px]
+                                md:text-[11px]
+                            "
+                        >
+
+                            <span
+                                className="
+                                    h-1.5
+                                    w-1.5
+                                    rounded-full
+                                    bg-indigo-400
+                                "
+                            />
+
+                            AI-powered career toolkit
+
+                        </div>
+
+                        {/* HEADING */}
+
+                        <h2
+                            className="
+                                mt-4
+                                w-full
+                                max-w-3xl
+                                text-center
+                                text-[27px]
+                                font-bold
+                                leading-[1.12]
+                                tracking-tight
+                                text-slate-50
+                                sm:mt-5
+                                sm:text-3xl
+                                md:text-4xl
+                                lg:text-5xl
+                            "
+                        >
+
+                            Your resume,
+
+                            <span className="block">
+
+                                read the{" "}
+
+                                <span
+                                    className="
+                                        bg-gradient-to-r
+                                        from-indigo-400
+                                        to-violet-400
+                                        bg-clip-text
+                                        text-transparent
+                                    "
+                                >
+                                    way recruiters
+                                </span>{" "}
+
+                                read it.
+
+                            </span>
+
+                        </h2>
+
+                        {/* DESCRIPTION */}
+
+                        <p
+                            className="
+                                mt-3
+                                w-full
+                                max-w-xl
+                                text-center
+                                text-[11px]
+                                leading-5
+                                text-slate-500
+                                sm:mt-4
+                                sm:text-sm
+                                sm:leading-6
+                            "
+                        >
+                            ResumeAI analyzes your resume, finds improvement
+                            opportunities and helps you make better career
+                            decisions with AI.
+                        </p>
+
+                        {/* RESUME ANALYSIS CARD */}
+
+                        <div
+                            className="
+                                mt-8
+                                flex
+                                w-full
+                                justify-center
+                                px-3
+                                sm:mt-10
+                                sm:px-0
+                            "
+                        >
+
+                            <div
+                                className="
+                                    w-full
+                                    max-w-[330px]
+                                    rounded-2xl
+                                    border
+                                    border-slate-700/70
+                                    bg-slate-900
+                                    p-3
+                                    text-left
+                                    shadow-2xl
+                                    shadow-black/40
+                                    sm:max-w-[420px]
+                                    sm:p-4
+                                "
+                            >
+
+                                {/* TOP BAR */}
+
+                                <div
+                                    className="
+                                        flex
+                                        items-center
+                                        justify-between
+                                        border-b
+                                        border-slate-800
+                                        pb-3
+                                    "
+                                >
+
+                                    <div className="flex items-center gap-2">
+
+                                        <div
+                                            className="
+                                                flex
+                                                h-7
+                                                w-7
+                                                items-center
+                                                justify-center
+                                                rounded-md
+                                                bg-indigo-500/10
+                                                text-xs
+                                                font-bold
+                                                text-indigo-400
+                                                ring-1
+                                                ring-indigo-500/20
+                                            "
+                                        >
+                                            R
+                                        </div>
+
+                                        <div>
+
+                                            <div className="h-2 w-20 rounded-full bg-slate-300" />
+
+                                            <div className="mt-1.5 h-1.5 w-14 rounded-full bg-slate-700" />
+
+                                        </div>
+
+                                    </div>
+
+                                    <span
+                                        className="
+                                            rounded-md
+                                            bg-emerald-500/10
+                                            px-2
+                                            py-1
+                                            text-[8px]
+                                            font-semibold
+                                            text-emerald-400
+                                            ring-1
+                                            ring-emerald-500/20
+                                            sm:text-[9px]
+                                        "
+                                    >
+                                        ANALYZED
+                                    </span>
+
+                                </div>
+
+                                {/* SCORE + ANALYSIS */}
+
+                                <div
+                                    className="
+                                        mt-4
+                                        grid
+                                        grid-cols-1
+                                        gap-3
+                                        sm:grid-cols-[105px_1fr]
+                                    "
+                                >
+
+                                    {/* ATS SCORE */}
+
+                                    <div
+                                        className="
+                                            flex
+                                            flex-col
+                                            items-center
+                                            justify-center
+                                            rounded-xl
+                                            border
+                                            border-slate-800
+                                            bg-slate-950/70
+                                            p-3
+                                        "
+                                    >
+
+                                        <div
+                                            className="
+                                                flex
+                                                h-16
+                                                w-16
+                                                items-center
+                                                justify-center
+                                                rounded-full
+                                                border-[5px]
+                                                border-emerald-500
+                                                sm:h-[70px]
+                                                sm:w-[70px]
+                                            "
+                                        >
+
+                                            <span
+                                                className="
+                                                    text-lg
+                                                    font-bold
+                                                    text-emerald-400
+                                                    sm:text-xl
+                                                "
+                                            >
+                                                92
+                                            </span>
+
+                                        </div>
+
+                                        <span
+                                            className="
+                                                mt-2
+                                                text-[8px]
+                                                font-semibold
+                                                uppercase
+                                                tracking-wider
+                                                text-slate-500
+                                            "
+                                        >
+                                            ATS Score
+                                        </span>
+
+                                        <span className="mt-1 text-[8px] text-emerald-400">
+                                            Excellent
+                                        </span>
+
+                                    </div>
+
+                                    {/* ANALYSIS DETAILS */}
+
+                                    <div className="space-y-2.5">
+
+                                        {/* KEYWORD */}
+
+                                        <div>
+
+                                            <div className="mb-1 flex items-center justify-between">
+
+                                                <span className="text-[9px] font-medium text-slate-400">
+                                                    Keyword Match
+                                                </span>
+
+                                                <span className="text-[9px] font-semibold text-indigo-400">
+                                                    94%
+                                                </span>
+
+                                            </div>
+
+                                            <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">
+
+                                                <div className="h-full w-[94%] rounded-full bg-indigo-500" />
+
+                                            </div>
+
+                                        </div>
+
+                                        {/* EXPERIENCE */}
+
+                                        <div>
+
+                                            <div className="mb-1 flex items-center justify-between">
+
+                                                <span className="text-[9px] font-medium text-slate-400">
+                                                    Experience
+                                                </span>
+
+                                                <span className="text-[9px] font-semibold text-emerald-400">
+                                                    Strong
+                                                </span>
+
+                                            </div>
+
+                                            <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">
+
+                                                <div className="h-full w-[88%] rounded-full bg-emerald-500" />
+
+                                            </div>
+
+                                        </div>
+
+                                        {/* FORMATTING */}
+
+                                        <div>
+
+                                            <div className="mb-1 flex items-center justify-between">
+
+                                                <span className="text-[9px] font-medium text-slate-400">
+                                                    Formatting
+                                                </span>
+
+                                                <span className="text-[9px] font-semibold text-amber-400">
+                                                    Good
+                                                </span>
+
+                                            </div>
+
+                                            <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">
+
+                                                <div className="h-full w-[82%] rounded-full bg-amber-500" />
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                {/* RESUME SECTIONS */}
+
+                                <div className="mt-4 grid grid-cols-2 gap-2">
+
+                                    {/* SKILLS */}
+
+                                    <div
+                                        className="
+                                            rounded-lg
+                                            border
+                                            border-slate-800
+                                            bg-slate-950/60
+                                            p-2.5
+                                        "
+                                    >
+
+                                        <div className="flex items-center justify-between">
+
+                                            <span className="text-[8px] font-semibold text-slate-400">
+                                                Skills
+                                            </span>
+
+                                            <span className="text-[8px] text-emerald-400">
+                                                ✓
+                                            </span>
+
+                                        </div>
+
+                                        <div className="mt-2 flex gap-1">
+
+                                            <span className="h-1.5 w-10 rounded-full bg-slate-700" />
+
+                                            <span className="h-1.5 w-6 rounded-full bg-slate-700" />
+
+                                        </div>
+
+                                    </div>
+
+                                    {/* EXPERIENCE */}
+
+                                    <div
+                                        className="
+                                            rounded-lg
+                                            border
+                                            border-slate-800
+                                            bg-slate-950/60
+                                            p-2.5
+                                        "
+                                    >
+
+                                        <div className="flex items-center justify-between">
+
+                                            <span className="text-[8px] font-semibold text-slate-400">
+                                                Experience
+                                            </span>
+
+                                            <span className="text-[8px] text-emerald-400">
+                                                ✓
+                                            </span>
+
+                                        </div>
+
+                                        <div className="mt-2 flex gap-1">
+
+                                            <span className="h-1.5 w-12 rounded-full bg-slate-700" />
+
+                                            <span className="h-1.5 w-5 rounded-full bg-slate-700" />
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                {/* AI RECOMMENDATION */}
+
+                                <div
+                                    className="
+                                        mt-3
+                                        rounded-lg
+                                        border
+                                        border-amber-500/20
+                                        bg-amber-500/5
+                                        p-2.5
+                                    "
+                                >
+
+                                    <div className="flex items-start gap-2">
+
+                                        <span
+                                            className="
+                                                flex
+                                                h-5
+                                                w-5
+                                                shrink-0
+                                                items-center
+                                                justify-center
+                                                rounded
+                                                bg-amber-500/10
+                                                text-[9px]
+                                                text-amber-400
+                                            "
+                                        >
+                                            !
+                                        </span>
+
+                                        <div>
+
+                                            <p
+                                                className="
+                                                    text-[8px]
+                                                    font-semibold
+                                                    text-amber-300
+                                                    sm:text-[9px]
+                                                "
+                                            >
+                                                AI Recommendation
+                                            </p>
+
+                                            <p
+                                                className="
+                                                    mt-0.5
+                                                    text-[8px]
+                                                    leading-4
+                                                    text-slate-500
+                                                "
+                                            >
+                                                Add measurable achievements
+                                                to strengthen your experience
+                                                section.
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                {/* BOTTOM */}
+
+                                <div
+                                    className="
+                                        mt-3
+                                        flex
+                                        items-center
+                                        justify-between
+                                        border-t
+                                        border-slate-800
+                                        pt-3
+                                    "
+                                >
+
+                                    <span className="text-[8px] text-slate-600">
+                                        Resume Analysis
+                                    </span>
+
+                                    <span className="text-[8px] font-medium text-indigo-400">
+                                        AI Powered
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                {/* =================================================
+                   ERROR
+                ================================================= */}
+
+                {error && (
+                    <div className="mx-auto w-full max-w-6xl px-4 pb-8 sm:px-6 lg:px-8">
+
+                        <div className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-xs text-red-300">
+                            {error}
+                        </div>
+
+                    </div>
+                )}
+
+            </main>
+
+            {/* =================================================
+               FOOTER
+            ================================================= */}
+
+            <Footer />
 
         </div>
     );
 }
-
-
-// =================================================
-// VERY IMPORTANT
-// =================================================
 
 export default Dashboard;
