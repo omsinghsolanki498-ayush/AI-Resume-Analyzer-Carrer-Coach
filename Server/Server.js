@@ -15,11 +15,22 @@ const JobRoutes = require("./Routes/Job");
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = [
+    "http://localhost:5173",
+    "https://ai-resume-analyzer-carrer-coach-smoky.vercel.app",
+];
+
+app.use(
+    cors({
+        origin: allowedOrigins,
+        credentials: true,
+    })
+);
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("AI Resume Analyzer Backend Running");
+    res.send("AI Resume Analyzer Backend Running");
 });
 
 app.use("/api/auth", AuthRoutes);
@@ -32,5 +43,5 @@ app.use("/api/jobs", JobRoutes);
 const PORT = process.env.PORT || 3002;
 
 app.listen(PORT, () => {
-  console.log(`Server Is Running on port ${PORT}`);
+    console.log(`Server Is Running on port ${PORT}`);
 });
