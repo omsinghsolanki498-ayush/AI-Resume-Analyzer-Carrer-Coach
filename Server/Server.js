@@ -15,9 +15,6 @@ const app = express();
 
 ConnectedDB();
 
-/* =========================
-   CORS
-========================= */
 
 const allowedOrigins = [
   "https://ai-resume-analyzer-carrer-coach-smoky.vercel.app",
@@ -56,15 +53,10 @@ app.use(
   })
 );
 
-/* =========================
-   BODY PARSER
-========================= */
+
 
 app.use(express.json());
 
-/* =========================
-   TEST
-========================= */
 
 app.get("/", (req, res) => {
   res.json({
@@ -73,9 +65,7 @@ app.get("/", (req, res) => {
   });
 });
 
-/* =========================
-   ROUTES
-========================= */
+
 
 app.use("/api/auth", AuthRoutes);
 
@@ -89,9 +79,7 @@ app.use("/api/roadmap", generateRoadmap);
 
 app.use("/api/jobs", JobRoutes);
 
-/* =========================
-   SERVER
-========================= */
+
 
 const PORT = process.env.PORT || 3002;
 

@@ -6,6 +6,7 @@ import StatCard from "../Components/StatCard";
 import Footer from "../Components/Footer";
 
 function Result() {
+   e.preventDefault();
     const navigate = useNavigate();
 
     const {

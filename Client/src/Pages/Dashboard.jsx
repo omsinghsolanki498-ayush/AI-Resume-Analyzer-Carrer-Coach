@@ -732,7 +732,7 @@ function Dashboard() {
                    ERROR
                 ================================================= */}
 
-                {error && (
+                {/* {error && (
                     <div className="mx-auto w-full max-w-6xl px-4 pb-8 sm:px-6 lg:px-8">
 
                         <div className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-xs text-red-300">
@@ -740,7 +740,7 @@ function Dashboard() {
                         </div>
 
                     </div>
-                )}
+                )} */}
 
             </main>
 

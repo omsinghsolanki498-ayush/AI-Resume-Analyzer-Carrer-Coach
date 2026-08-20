@@ -68,7 +68,7 @@ function DashboardSidebar() {
         setMobileOpen(false);
         setAccountOpen(false);
 
-        navigate("/login");
+        navigate("/Login");
     };
 
     // ==========================================
