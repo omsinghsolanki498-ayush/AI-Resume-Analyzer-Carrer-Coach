@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../Api/Axios";
+import api from "../api/axios";
 
 function JobRecommendations() {
     const navigate = useNavigate();
