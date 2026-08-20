@@ -5,7 +5,7 @@ import {
     useState,
 } from "react";
 
-import api from "../api/axios";
+import api from "../Api/Axios";
 
 
 const DashboardContext =
