@@ -1,107 +1,3 @@
-
-
-// import {
-//   BrowserRouter,
-//   Routes,
-//   Route,
-//   Navigate,
-// } from "react-router-dom";
-
-
-
-// import Login from "./Pages/Login";
-// import Register from "./Pages/Register";
-
-// import Dashboard from "./Pages/Dashboard";
-
-// import ResumeAnalyzer from "./Pages/ResumeAnalyzer";
-// import ResumeAnalysis from "./Pages/ResumeAnalysis";
-// import CarrerCoach from "./Pages/CarrerCoach";
-// import Roadmap from "./Pages/Roadmap";
-// import Result from "./Components/Result";
-
-// import JobRecommendations from "./pages/JobRecommendations";
-
-// import ProtectedRoute from "./Protect/ProtectedRoute";
-
-// function App() {
-//   const token = localStorage.getItem("token");
-
-//   return (
-//     <BrowserRouter>
-
-//       <Routes>
-
-
-//         <Route
-//           path="/dashboard"
-//           element={
-//             <ProtectedRoute>
-//               <Dashboard />
-//             </ProtectedRoute>
-//           }
-//         />
-
-
-//         <Route
-//           path="/Login"
-//           element={<Login />}
-//         />
-
-//         <Route
-//           path="/"
-//           element={<Register />}
-//         />
-
-//         <Route
-//           path="/"
-//           element={
-//             <ProtectedRoute>
-//               <Dashboard />
-//             </ProtectedRoute>
-//           }
-//         />
-
-//         <Route
-//           path="/resume-analyzer"
-//           element={<ResumeAnalyzer />}
-//         />
-
-//         <Route
-//           path="/resume-analysis/:id"
-//           element={<ResumeAnalysis />}
-//         />
-
-//         <Route
-//           path="/career-coach"
-//           element={<CarrerCoach />}
-//         />
-
-//         <Route path="roadmap"
-//           element={<Roadmap />}
-//         />
-
-//         <Route
-//           path="/jobs"
-//           element={
-//             <JobRecommendations />
-//           }
-//         />
-
-//         <Route path="/Result"
-//         element={<Result/>}/>
-
-//       </Routes>
-
-//     </BrowserRouter>
-//   );
-// }
-
-// export default App;
-
-
-
-
 import {
     BrowserRouter,
     Routes,
@@ -121,7 +17,7 @@ import Roadmap from "./Pages/Roadmap";
 
 import Result from "./Components/Result";
 
-import JobRecommendations from "./pages/JobRecommendations";
+import JobRecommendations from "./Pages/JobRecommendations";
 
 import ProtectedRoute from "./Protect/ProtectedRoute";
 
