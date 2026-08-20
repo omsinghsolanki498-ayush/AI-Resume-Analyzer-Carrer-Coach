@@ -374,7 +374,7 @@ function DashboardSidebar() {
                                         ring-slate-800
                                     "
                                 >
-                                    U
+                                    
                                 </div>
 
                                 <div
