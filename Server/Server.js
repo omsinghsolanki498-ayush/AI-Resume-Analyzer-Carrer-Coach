@@ -4,8 +4,6 @@ require("dotenv").config();
 
 const ConnectedDB = require("./Config/Db");
 
-ConnectedDB();
-
 const ResumeRoutes = require("./Routes/resumeRoutes");
 const AuthRoutes = require("./Routes/AuthRoutes");
 const analyzeResume = require("./Routes/AnalyzerResume");
@@ -15,8 +13,10 @@ const JobRoutes = require("./Routes/Job");
 
 const app = express();
 
+ConnectedDB();
+
 /* =========================
-   CORS CONFIGURATION
+   CORS
 ========================= */
 
 const allowedOrigins = [
@@ -24,40 +24,37 @@ const allowedOrigins = [
   "http://localhost:5173",
 ];
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests without origin (Postman, server-to-server, etc.)
-    if (!origin) {
-      return callback(null, true);
-    }
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) {
+        return callback(null, true);
+      }
 
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
 
-    return callback(new Error("Not allowed by CORS"));
-  },
+      return callback(new Error("CORS origin not allowed"));
+    },
 
-  credentials: true,
+    credentials: true,
 
-  methods: [
-    "GET",
-    "POST",
-    "PUT",
-    "PATCH",
-    "DELETE",
-    "OPTIONS",
-  ],
+    methods: [
+      "GET",
+      "POST",
+      "PUT",
+      "PATCH",
+      "DELETE",
+      "OPTIONS",
+    ],
 
-  allowedHeaders: [
-    "Content-Type",
-    "Authorization",
-  ],
-
-  optionsSuccessStatus: 200,
-};
-
-app.use(cors(corsOptions));
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+    ],
+  })
+);
 
 /* =========================
    BODY PARSER
@@ -66,7 +63,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 /* =========================
-   TEST ROUTE
+   TEST
 ========================= */
 
 app.get("/", (req, res) => {
@@ -77,7 +74,7 @@ app.get("/", (req, res) => {
 });
 
 /* =========================
-   API ROUTES
+   ROUTES
 ========================= */
 
 app.use("/api/auth", AuthRoutes);
@@ -93,7 +90,7 @@ app.use("/api/roadmap", generateRoadmap);
 app.use("/api/jobs", JobRoutes);
 
 /* =========================
-   PORT
+   SERVER
 ========================= */
 
 const PORT = process.env.PORT || 3002;
