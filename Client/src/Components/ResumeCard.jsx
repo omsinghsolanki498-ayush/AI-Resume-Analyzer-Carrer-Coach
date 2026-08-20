@@ -14,6 +14,7 @@ function ResumeCard({ resume, onDelete, deleting }) {
               month: "short",
               year: "numeric",
           })
+          
         : "Recently uploaded";
 
     // Dynamic color coding based on ATS Score ranges
