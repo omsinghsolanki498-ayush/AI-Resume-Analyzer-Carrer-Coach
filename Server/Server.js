@@ -1,8 +1,9 @@
-const express = require("express");
-const cors = require("cors");
+const express = require("express");  // import express
+const cors = require("cors"); // for client server connection
 require("dotenv").config();
 
-const ConnectedDB = require("./Config/Db");
+const ConnectedDB = require("./Config/Db");  // database
+
 
 const ResumeRoutes = require("./Routes/resumeRoutes");
 const AuthRoutes = require("./Routes/AuthRoutes");
@@ -13,12 +14,12 @@ const JobRoutes = require("./Routes/Job");
 
 const app = express();
 
-ConnectedDB();
+ConnectedDB();  // call DB
 
 
 const allowedOrigins = [
-  "https://ai-resume-analyzer-carrer-coach-smoky.vercel.app",
-  "http://localhost:5173",
+  "https://ai-resume-analyzer-carrer-coach-smoky.vercel.app",  // vercel URL
+  "http://localhost:5173",  // local URL
 ];
 
 app.use(
@@ -67,18 +68,14 @@ app.get("/", (req, res) => {
 
 
 
+// Middleware
+
 app.use("/api/auth", AuthRoutes);
-
 app.use("/api/resume", ResumeRoutes);
-
 app.use("/api/ai", analyzeResume);
-
 app.use("/api/career-coach", CarrerCoachRoute);
-
 app.use("/api/roadmap", generateRoadmap);
-
 app.use("/api/jobs", JobRoutes);
-
 
 
 const PORT = process.env.PORT || 3002;

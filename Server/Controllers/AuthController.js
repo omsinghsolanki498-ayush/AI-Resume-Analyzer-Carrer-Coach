@@ -1,6 +1,6 @@
-const User = require("../Models/User");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const User = require("../Models/User");  // DB user info rakhega
+const bcrypt = require("bcrypt");  // for hash password
+const jwt = require("jsonwebtoken"); // build token after login success
 
 // ------------ Register ---------------
 
@@ -8,25 +8,25 @@ exports.RegisterUser = async (req, res) => {
 
     try {
 
-        const { name, email, password } = req.body;
+        const { name, email, password } = req.body;  // data frontend se mangwa liya
 
         // check
-        if (!name || !email || !password) {
+        if (!name || !email || !password) {  // check
             return res.status(400).json({
                 message: "All Fields Require",
             });
         }
 
         // check user already exists
-        const userExists = await User.findOne({ email });
+        const userExists = await User.findOne({ email });  // findOne email in DB
 
-        if (userExists) {
+        if (userExists) {  // email phle se hai to => 400(st)
             return res.status(400).json({
                 message: "User Already Exists",
             });
         }
 
-        const hashpassword = await bcrypt.hash(password, 10);
+        const hashpassword = await bcrypt.hash(password, 10); // hashPassword bdskiv$$#FSEF
 
         const createUser = await User.create({  // user create in db
             name,
@@ -34,10 +34,10 @@ exports.RegisterUser = async (req, res) => {
             password: hashpassword,
         });
 
-        return res.status(200).json({
+        return res.status(200).json({ // successfull
             message: "User Registered Successfully",
 
-            user: {
+            user: {  
                 id: createUser._id,
                 name: createUser.name,
                 email: createUser.email,
@@ -59,17 +59,17 @@ exports.LoginUser = async (req, res) => {
 
     try {
 
-        const { email, password } = req.body;
+        const { email, password } = req.body;  // data come's
 
-        if (!email || !password) {
+        if (!email || !password) {  // check
             return res.status(400).json({
                 message: "email and passowrd are required",
             });
         }
 
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email });  // agar email phle se hai login time pr to success
 
-        if (!user) {
+        if (!user) {  // nhi hai to error
             return res.status(400).json({
                 message: "Please Register First",
             });
@@ -77,12 +77,12 @@ exports.LoginUser = async (req, res) => {
 
         // compare password
 
-        const ispassword = await bcrypt.compare(
-            password,
-            user.password,
+        const ispassword = await bcrypt.compare(  
+            password,  // register password
+            user.password,  // rlogin password
         );
 
-        if (!ispassword) {
+        if (!ispassword) {  // check password match oe not
             return res.status(400).json({
                 message: "Invlaid Email or Password",
             });
@@ -90,13 +90,13 @@ exports.LoginUser = async (req, res) => {
 
         // generate token
 
-        const token = jwt.sign({
+        const token = jwt.sign({ // sb set hai to built token
 
-            id: user._id,
-            email: user.email,
+            id: user._id,  // userID
+            email: user.email, // user eamil
 
         },
-            process.env.JWT_SECRET,
+            process.env.JWT_SECRET,   // secret key .env
             {
                 expiresIn: "7d",
             }
@@ -104,7 +104,7 @@ exports.LoginUser = async (req, res) => {
 
         return res.status(200).json({
             message: "Login Successfully Done",
-            token,
+            token,   // token build send
 
             user: {
                 id: user._id,

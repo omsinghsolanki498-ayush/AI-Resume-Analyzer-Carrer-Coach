@@ -1,14 +1,10 @@
 const axios = require("axios");
-const Resume = require("../Models/Resume");
-const CarrerChat = require("../Models/CarrerChat");
-
-// ==========================================
-// GET CHAT HISTORY
-// ==========================================
+const Resume = require("../Models/Resume");  // resume database
+const CarrerChat = require("../Models/CarrerChat");  // chat data save in this DB
 
 const getChat = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user.id;  // come id
 
         const chats = await CarrerChat.find({
             user: userId,
@@ -19,7 +15,7 @@ const getChat = async (req, res) => {
             .limit(100);
 
         return res.status(200).json({
-            chats,
+            chats,  // chat go to frontend
         });
 
     } catch (error) {
@@ -37,13 +33,13 @@ const getChat = async (req, res) => {
 
 const clearchat = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user.id;  // id
 
-        await CarrerChat.deleteMany({
+        await CarrerChat.deleteMany({  // delete
             user: userId,
         });
 
-        return res.status(200).json({
+        return res.status(200).json({  // success
             message: "Chat history cleared successfully",
         });
 
@@ -60,27 +56,27 @@ const clearchat = async (req, res) => {
 // CAREER COACH CHAT
 // ==========================================
 
-const carrercoachChat = async (req, res) => {
+const carrercoachChat = async (req, res) => {  // AI chat
     try {
-        const { message } = req.body;
+        const { message } = req.body;  // user message come's
 
         // ==========================================
         // VALIDATE MESSAGE
         // ==========================================
 
-        if (!message || !message.trim()) {
-            return res.status(400).json({
+        if (!message || !message.trim()) {  //check message
+            return res.status(400).json({  // success 
                 message: "Please enter a question",
             });
         }
 
-        const userId = req.user.id;
+        const userId = req.user.id;  // comes user id
 
         // ==========================================
         // FIND LATEST RESUME
         // ==========================================
 
-        const resume = await Resume.findOne({
+        const resume = await Resume.findOne({  // Db find user id
             user: userId,
         }).sort({
             createdAt: -1,
@@ -90,7 +86,7 @@ const carrercoachChat = async (req, res) => {
         // BUILD RESUME CONTEXT
         // ==========================================
 
-        let resumeContext =
+        let resumeContext =  
             "User has not uploaded a resume yet.";
 
         if (resume) {
@@ -98,7 +94,7 @@ const carrercoachChat = async (req, res) => {
 ================ RESUME DATA ================
 
 Resume File:
-${resume.originalName || "N/A"}
+${resume.originalName || "N/A"}  
 
 Target Role:
 ${resume.jobRoleMatch?.role || "Not specified"}
@@ -251,7 +247,7 @@ ${resumeContext}
             {
                 model:
                     process.env.AI_MODEL ||
-                    "openai/gpt-3.5-turbo",
+                    "openai/gpt-3.5-turbo",  // model ai
 
                 messages: [
                     {

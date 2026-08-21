@@ -1,5 +1,5 @@
 const axios = require("axios");
-const Resume = require("../Models/Resume");
+const Resume = require("../Models/Resume");  // db
 
 
 // ==========================================
@@ -32,7 +32,7 @@ const getJobRecommendations = async (req, res) => {
         // ======================================
         // RESUME DATA
         // ======================================
-
+          // inse(4) ai job recommand krega
         const skills = Array.isArray(resume.skills)
             ? resume.skills
             : [];
@@ -67,6 +67,7 @@ const getJobRecommendations = async (req, res) => {
         // AI PROMPT
         // ======================================
 
+        // prompt for ai
         const prompt = `
 You are an expert technical recruiter and career advisor.
 
@@ -141,7 +142,7 @@ Use exactly this structure:
             {
                 model:
                     process.env.AI_MODEL ||
-                    "openai/gpt-3.5-turbo",
+                    "openai/gpt-3.5-turbo",  // model ai
 
                 messages: [
                     {
@@ -151,7 +152,7 @@ Use exactly this structure:
                     },
                     {
                         role: "user",
-                        content: prompt,
+                        content: prompt,  // upr wla
                     },
                 ],
             },
@@ -174,10 +175,8 @@ Use exactly this structure:
         );
 
 
-        // ======================================
-        // GET AI RESPONSE
-        // ======================================
-
+           // GET AI RESPONSE
+        
         let aiText =
             response.data?.choices?.[0]
                 ?.message?.content;
@@ -209,7 +208,7 @@ Use exactly this structure:
 
         try {
 
-            jobs = JSON.parse(aiText);
+            jobs = JSON.parse(aiText);  // jobs me ai  text
 
         } catch (error) {
 
@@ -229,7 +228,7 @@ Use exactly this structure:
         // SEND RESPONSE
         // ======================================
 
-        return res.status(200).json({
+        return res.status(200).json({  // success jobs(aiText) send frontend
             jobs,
         });
 

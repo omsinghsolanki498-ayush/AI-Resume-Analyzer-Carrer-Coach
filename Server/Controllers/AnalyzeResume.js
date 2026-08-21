@@ -1,14 +1,15 @@
-const axios = require("axios");
+const axios = require("axios");  
 const Resume = require("../Models/Resume");
 
 const analyzeResume = async (req, res) => {
   try {
-    const { resumeId, targetRole } = req.body;
+
+    const { resumeId, targetRole } = req.body;  // resumeID , targetRole (frontend developer ,java developer) comes from frontend
 
     // ==========================================
     // 1. Validate Resume ID
     // ==========================================
-    if (!resumeId) {
+    if (!resumeId) {  // check resume id
       return res.status(400).json({
         message: "Resume ID is required",
       });
@@ -17,12 +18,12 @@ const analyzeResume = async (req, res) => {
     // ==========================================
     // 2. Find User's Resume
     // ==========================================
-    const resume = await Resume.findOne({
+    const resume = await Resume.findOne({  // findOne resume id available or not
       _id: resumeId,
       user: req.user.id,
     });
 
-    if (!resume) {
+    if (!resume) {  // id not
       return res.status(404).json({
         message: "Resume not found",
       });
@@ -31,9 +32,7 @@ const analyzeResume = async (req, res) => {
     // ==========================================
     // 3. Check Extracted Resume Text
     // ==========================================
-    if (
-      !resume.extractedText ||
-      !resume.extractedText.trim()
+    if (!resume.extractedText ||!resume.extractedText.trim()  // text resume
     ) {
       return res.status(400).json({
         message: "Resume text is not available",
@@ -43,7 +42,7 @@ const analyzeResume = async (req, res) => {
     // ==========================================
     // 4. Check OpenRouter API Key
     // ==========================================
-    if (!process.env.OPENROUTER_API_KEY) {
+    if (!process.env.OPENROUTER_API_KEY) {  // check api key available or not in .env
       return res.status(500).json({
         message: "OpenRouter API key is not configured",
       });
@@ -52,21 +51,21 @@ const analyzeResume = async (req, res) => {
     // ==========================================
     // 5. Prepare Resume Text
     // ==========================================
-    const resumeText = resume.extractedText.slice(
+    const resumeText = resume.extractedText.slice(  
       0,
       25000
     );
 
-    const role =
-      typeof targetRole === "string" &&
+    const role = typeof targetRole === "string" &&
       targetRole.trim()
         ? targetRole.trim()
         : "Full Stack Developer";
 
     // ==========================================
-    // 6. AI Prompt
+    // 6. AI Prompt  send to AI
     // ==========================================
-    const prompt = `
+
+    const prompt = ` 
 You are an expert ATS resume analyzer and professional career coach.
 
 Your task is to analyze the resume provided below for the target job role.
@@ -83,12 +82,13 @@ IMPORTANT SECURITY RULES:
 - Do NOT use Markdown.
 - Do NOT wrap the JSON inside code fences.
 
+
 TARGET JOB ROLE:
-${role}
+${role}  
 
 RESUME:
 """
-${resumeText}
+${resumeText} 
 """
 
 Return EXACTLY this JSON structure:
@@ -157,14 +157,14 @@ jobRoleMatch:
 `;
 
     // ==========================================
-    // 7. Call OpenRouter
+    // 7. Call OpenRouter  
     // ==========================================
     const aiResponse = await axios.post(
-      "https://openrouter.ai/api/v1/chat/completions",
+      "https://openrouter.ai/api/v1/chat/completions",  
       {
         model:
-          process.env.OPENROUTER_MODEL ||
-          "openai/gpt-4o-mini",
+          process.env.OPENROUTER_MODEL ||  // key
+          "openai/gpt-4o-mini",  // model
 
         messages: [
           {
@@ -174,7 +174,7 @@ jobRoleMatch:
           },
           {
             role: "user",
-            content: prompt,
+            content: prompt, // upr wla 
           },
         ],
 
@@ -224,7 +224,7 @@ jobRoleMatch:
     let analysis;
 
     try {
-      analysis = JSON.parse(aiText);
+      analysis = JSON.parse(aiText);  // ai Text
     } catch (parseError) {
       console.error(
         "AI JSON PARSE ERROR:"
@@ -242,7 +242,7 @@ jobRoleMatch:
     // 11. Validate Analysis Object
     // ==========================================
     if (
-      !analysis ||
+      !analysis ||  
       typeof analysis !== "object"
     ) {
       return res.status(500).json({
@@ -285,8 +285,8 @@ jobRoleMatch:
         ? analysis.summary
         : "";
 
-    resume.skills =
-      Array.isArray(analysis.skills)
+    resume.skills =  // resume ke skille box[me]
+      Array.isArray(analysis.skills)  // analysis dldo db array me hai to jada bhe dll jayega  niche sbme vohe ho rha hai
         ? analysis.skills
         : [];
 
@@ -320,7 +320,7 @@ jobRoleMatch:
       "Senior",
     ];
 
-    resume.experienceLevel =
+    resume.experienceLevel =  
       validExperienceLevels.includes(
         analysis.experienceLevel
       )
@@ -349,7 +349,7 @@ jobRoleMatch:
     // ==========================================
     // 17. Analysis Date
     // ==========================================
-    resume.analyzedAt = new Date();
+    resume.analyzedAt = new Date();  // date
 
     // ==========================================
     // 18. Save Resume
