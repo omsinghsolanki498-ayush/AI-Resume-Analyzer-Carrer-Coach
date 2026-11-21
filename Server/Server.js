@@ -71,10 +71,15 @@ app.get("/", (req, res) => {
 // Middleware
 
 app.use("/api/auth", AuthRoutes);
+
 app.use("/api/resume", ResumeRoutes);
+
 app.use("/api/ai", analyzeResume);
+
 app.use("/api/career-coach", CarrerCoachRoute);
+
 app.use("/api/roadmap", generateRoadmap);
+
 app.use("/api/jobs", JobRoutes);
 
 

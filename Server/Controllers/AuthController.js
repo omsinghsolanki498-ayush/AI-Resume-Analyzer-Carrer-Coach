@@ -79,7 +79,7 @@ exports.LoginUser = async (req, res) => {
 
         const ispassword = await bcrypt.compare(  
             password,  // register password
-            user.password,  // rlogin password
+            user.password,  // login password
         );
 
         if (!ispassword) {  // check password match oe not

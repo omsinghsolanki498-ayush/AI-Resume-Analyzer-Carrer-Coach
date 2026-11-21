@@ -41,12 +41,7 @@ function Register() {
     const name = formData.name.trim();
     const email = formData.email.trim();
 
-    if (
-      !name ||
-      !email ||
-      !formData.password ||
-      !formData.confirmPassword
-    ) {
+    if (!name || !email || !formData.password || !formData.confirmPassword) {
       setMessage("Please fill all fields");
       return;
     }
@@ -65,15 +60,14 @@ function Register() {
       setLoading(true);
       setMessage("");
 
-      const response = await api.post("/auth/register", {
+      // Send Data To Backend
+      const response = await api.post("/auth/register", {  // API 
         name,
         email,
         password: formData.password,
       });
 
-      setMessage(
-        response.data?.message || "Registration successful"
-      );
+      setMessage(response.data?.message || "Registration successful");
 
       setTimeout(() => {
         navigate("/login");
@@ -81,7 +75,7 @@ function Register() {
     } catch (error) {
       setMessage(
         error.response?.data?.message ||
-        "Registration failed. Please try again."
+          "Registration failed. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -90,11 +84,9 @@ function Register() {
 
   return (
     <div className="min-h-screen w-full overflow-x-hidden bg-[#090909] text-white">
-
       {/* ================= PAGE WRAPPER ================= */}
 
       <div className="mx-auto flex min-h-screen w-full max-w-[1400px] items-center justify-center px-4 py-8 sm:px-6 sm:py-10 lg:px-8 xl:px-12">
-
         {/* ================= MAIN GRID ================= */}
 
         <div
@@ -109,13 +101,11 @@ function Register() {
             xl:gap-24
           "
         >
-
           {/* ==================================================
               LEFT SIDE - DESKTOP
           ================================================== */}
 
           <section className="hidden lg:flex lg:flex-col lg:justify-center">
-
             {/* Brand */}
 
             <button
@@ -123,13 +113,11 @@ function Register() {
               onClick={() => navigate("/")}
               className="mb-14 flex w-fit items-center gap-3 text-left"
             >
-
               <div>
                 <span className="mt-0.5 block text-xs text-[#737373]">
                   Career Intelligence
                 </span>
               </div>
-
             </button>
 
             {/* Small Label */}
@@ -162,10 +150,7 @@ function Register() {
               "
             >
               Build your
-
-              <span className="mt-2 block text-[#a3a3a3]">
-                career smarter.
-              </span>
+              <span className="mt-2 block text-[#a3a3a3]">career smarter.</span>
             </h1>
 
             {/* Description */}
@@ -180,15 +165,13 @@ function Register() {
                 xl:text-[15px]
               "
             >
-              Analyze your resume, discover your strengths,
-              improve your skills and prepare for your next
-              career opportunity with AI.
+              Analyze your resume, discover your strengths, improve your skills
+              and prepare for your next career opportunity with AI.
             </p>
 
             {/* Simple Benefits */}
 
             <div className="mt-9 space-y-3">
-
               <div className="flex items-center gap-3">
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-500/10 text-xs text-indigo-400">
                   ✓
@@ -218,7 +201,6 @@ function Register() {
                   Improve your job readiness
                 </span>
               </div>
-
             </div>
           </section>
 
@@ -227,30 +209,23 @@ function Register() {
           ================================================== */}
 
           <section className="w-full">
-
             <div className="mx-auto w-full max-w-[500px] lg:ml-auto">
-
               {/* ================= MOBILE BRAND ================= */}
 
               <div className="mb-8 sm:mb-10 lg:hidden">
-
                 <button
                   type="button"
                   onClick={() => navigate("/")}
                   className="flex items-center gap-3"
                 >
-
                   <span className="text-left">
-                    <span className="block text-base font-semibold text-white">
-                    </span>
+                    <span className="block text-base font-semibold text-white"></span>
 
                     <span className="block text-[10px] text-[#737373]">
                       Career Intelligence
                     </span>
                   </span>
-
                 </button>
-
               </div>
 
               {/* ================= FORM CARD ================= */}
@@ -274,13 +249,9 @@ function Register() {
                   lg:shadow-none
                 "
               >
-
                 {/* ================= HEADING ================= */}
 
                 <div className="mb-7 sm:mb-8">
-
-
-
                   <h2
                     className="
                       text-2xl
@@ -296,7 +267,6 @@ function Register() {
                   <p className="mt-2.5 text-xs leading-5 text-[#737373] sm:text-sm sm:leading-6">
                     Start your AI-powered career journey.
                   </p>
-
                 </div>
 
                 {/* ================= FORM ================= */}
@@ -473,9 +443,8 @@ function Register() {
                       htmlFor="confirmPassword"
                       className="mb-2 block text-xs font-medium text-[#b5b5b5] sm:text-sm"
                     >
-                     confirm password
+                      confirm password
                     </label>
-
 
                     <div className="relative w-full">
                       <input
@@ -518,9 +487,7 @@ function Register() {
 
                       <button
                         type="button"
-                        onClick={() =>
-                          setShowConfirmPassword((prev) => !prev)
-                        }
+                        onClick={() => setShowConfirmPassword((prev) => !prev)}
                         disabled={loading}
                         className="
           absolute
@@ -552,10 +519,12 @@ function Register() {
         text-xs
         leading-5
         sm:text-sm
-        ${message.toLowerCase().includes("success")
-                          ? "bg-emerald-500/10 text-emerald-400"
-                          : "bg-red-500/10 text-red-400"
-                        }
+
+        ${
+          message.toLowerCase().includes("success")
+            ? "bg-emerald-500/10 text-emerald-400"
+            : "bg-red-500/10 text-red-400"
+        }
       `}
                     >
                       {message}
@@ -601,7 +570,6 @@ function Register() {
 
                 <p className="mt-7 text-center text-xs text-[#737373] sm:mt-8 sm:text-sm">
                   Already have an account?
-
                   <Link
                     to="/login"
                     className="
@@ -617,7 +585,6 @@ function Register() {
                     Sign in
                   </Link>
                 </p>
-
               </div>
 
               {/* ================= MOBILE FEATURES ================= */}
@@ -632,21 +599,16 @@ function Register() {
                   pt-6
                   lg:hidden
                 "
-              >
-
-              </div>
+              ></div>
 
               {/* ================= SECURITY TEXT ================= */}
 
               <p className="mt-6 text-center text-[10px] leading-4 text-[#454545] sm:text-xs">
-                By creating an account, you agree to use
-                Precision AI responsibly.
+                By creating an account, you agree to use Precision AI
+                responsibly.
               </p>
-
             </div>
-
           </section>
-
         </div>
       </div>
     </div>

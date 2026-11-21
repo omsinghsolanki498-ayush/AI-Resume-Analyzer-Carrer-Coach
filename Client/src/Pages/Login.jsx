@@ -24,8 +24,10 @@ function Login() {
       setMessage("");
 
       const response = await api.post("/auth/login", {
+
         email,
         password,
+
       });
 
       console.log("login response =>", response);
@@ -186,6 +188,7 @@ function Login() {
               </div>
 
               {/* ================= FORM ================= */}
+              
               <form
                 onSubmit={handleSubmit}
                 className="w-full space-y-5"

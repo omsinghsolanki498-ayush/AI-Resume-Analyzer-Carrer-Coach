@@ -10,9 +10,9 @@ const getChat = async (req, res) => {
             user: userId,
         })
             .sort({
-                createdAt: 1,
+                createdAt: 1,  // ascending order sort chat ayegii
             })
-            .limit(100);
+            .limit(100);  // limit lagadi total 100 chat's only come's
 
         return res.status(200).json({
             chats,  // chat go to frontend

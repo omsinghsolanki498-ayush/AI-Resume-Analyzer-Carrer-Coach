@@ -2,12 +2,12 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 function FooterIntro() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    return (
-        <footer className="w-full border-t border-slate-800/60 bg-slate-950">
-            <div
-                className="
+  return (
+    <footer className="w-full border-t border-slate-800/60 bg-slate-950">
+      <div
+        className="
                     mx-auto
                     flex
                     w-full
@@ -26,31 +26,31 @@ function FooterIntro() {
                     md:text-left
                     lg:px-8
                 "
-            >
-                {/* ================= LOGO ================= */}
-                <div
-                    className="
+      >
+        {/* ================= LOGO ================= */}
+        <div
+          className="
                         flex
                         flex-col
                         items-center
                         justify-center
                         md:items-start
                     "
-                >
-                    <button
-                        type="button"
-                        onClick={() => navigate("/")}
-                        className="
+        >
+          <button
+            type="button"
+            onClick={() => navigate("/")}
+            className="
                             flex
                             items-center
                             gap-2
                             rounded-md
                             outline-none
                         "
-                    >
-                        {/* Logo */}
-                        <span
-                            className="
+          >
+            {/* Logo */}
+            <span
+              className="
                                 flex
                                 h-7
                                 w-7
@@ -66,45 +66,42 @@ function FooterIntro() {
                                 sm:w-8
                                 sm:text-xs
                             "
-                        >
-                            R
-                        </span>
+            >
+              R
+            </span>
 
-                        {/* Brand */}
-                        <span
-                            className="
+            {/* Brand */}
+            <span
+              className="
                                 text-sm
                                 font-bold
                                 tracking-tight
                                 text-white
                                 sm:text-base
                             "
-                        >
-                            Resume
-                            <span className="text-indigo-400">
-                                AI
-                            </span>
-                        </span>
-                    </button>
+            >
+              Resume
+              <span className="text-indigo-400">AI</span>
+            </span>
+          </button>
 
-                    {/* Copyright */}
-                    <p
-                        className="
+          {/* Copyright */}
+          <p
+            className="
                             mt-1.5
                             text-[9px]
                             leading-4
                             text-slate-600
                             sm:text-[10px]
                         "
-                    >
-                        © {new Date().getFullYear()} ResumeAI. All
-                        rights reserved.
-                    </p>
-                </div>
+          >
+            © {new Date().getFullYear()} ResumeAI. All rights reserved.
+          </p>
+        </div>
 
-                {/* ================= FOOTER LINKS ================= */}
-                <nav
-                    className="
+        {/* ================= FOOTER LINKS ================= */}
+        <nav
+          className="
                         flex
                         flex-wrap
                         items-center
@@ -117,11 +114,10 @@ function FooterIntro() {
                         sm:text-[11px]
                         md:justify-end
                     "
-                >  
-                </nav>
-            </div>
-        </footer>
-    );
+        ></nav>
+      </div>
+    </footer>
+  );
 }
 
 export default FooterIntro;

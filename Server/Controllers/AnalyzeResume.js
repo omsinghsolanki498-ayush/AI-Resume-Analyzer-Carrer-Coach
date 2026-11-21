@@ -163,8 +163,8 @@ jobRoleMatch:
       "https://openrouter.ai/api/v1/chat/completions",  
       {
         model:
-          process.env.OPENROUTER_MODEL ||  // key
-          "openai/gpt-4o-mini",  // model
+          process.env.AI_MODEL, // key
+          // "openai/gpt-4o-mini",  // model
 
         messages: [
           {
