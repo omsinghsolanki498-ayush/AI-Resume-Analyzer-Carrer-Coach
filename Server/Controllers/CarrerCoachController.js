@@ -247,7 +247,7 @@ ${resumeContext}
             {
                 model:
                     process.env.AI_MODEL ||
-                    "openai/gpt-3.5-turbo",  // model ai
+                    "openai/gpt-4o-mini",  // model ai
 
                 messages: [
                     {
