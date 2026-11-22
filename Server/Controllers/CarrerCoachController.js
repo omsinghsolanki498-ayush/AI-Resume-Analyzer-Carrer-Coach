@@ -1,30 +1,32 @@
 const axios = require("axios");
-const Resume = require("../Models/Resume");  // resume database
-const CarrerChat = require("../Models/CarrerChat");  // chat data save in this DB
+const Resume = require("../Models/Resume"); // resume database
+const CarrerChat = require("../Models/CarrerChat"); // chat data save in this DB
 
 const getChat = async (req, res) => {
-    try {
-        const userId = req.user.id;  // come id
+  try {
+    const userId = req.user.id; // come id
+    console.log("USER ID:", userId);
+    console.log("USER OBJECT:", req.user);
+    console.log("MONGODB CONNECTION:", mongoose.connection.name);
 
-        const chats = await CarrerChat.find({
-            user: userId,
-        })
-            .sort({
-                createdAt: 1,  // ascending order sort chat ayegii
-            })
-            .limit(100);  // limit lagadi total 100 chat's only come's
+    const chats = await CarrerChat.find({
+      user: userId,
+    })
+      .sort({
+        createdAt: 1, // ascending order sort chat ayegii
+      })
+      .limit(100); // limit lagadi total 100 chat's only come's
 
-        return res.status(200).json({
-            chats,  // chat go to frontend
-        });
+    return res.status(200).json({
+      chats, // chat go to frontend
+    });
+  } catch (error) {
+    console.error("GET CHAT ERROR:", error);
 
-    } catch (error) {
-        console.error("GET CHAT ERROR:", error);
-
-        return res.status(500).json({
-            message: "Failed to load chat history",
-        });
-    }
+    return res.status(500).json({
+      message: "Failed to load chat history",
+    });
+  }
 };
 
 // ==========================================
@@ -32,65 +34,72 @@ const getChat = async (req, res) => {
 // ==========================================
 
 const clearchat = async (req, res) => {
-    try {
-        const userId = req.user.id;  // id
+  try {
+    const userId = req.user.id; // id
+    console.log("USER ID:", userId);
+    console.log("USER OBJECT:", req.user);
+    console.log("MONGODB CONNECTION:", mongoose.connection.name);
 
-        await CarrerChat.deleteMany({  // delete
-            user: userId,
-        });
+    await CarrerChat.deleteMany({
+      // delete
+      user: userId,
+    });
 
-        return res.status(200).json({  // success
-            message: "Chat history cleared successfully",
-        });
+    return res.status(200).json({
+      // success
+      message: "Chat history cleared successfully",
+    });
+  } catch (error) {
+    console.error("CLEAR CHAT ERROR:", error);
 
-    } catch (error) {
-        console.error("CLEAR CHAT ERROR:", error);
-
-        return res.status(500).json({
-            message: "Failed to clear chat history",
-        });
-    }
+    return res.status(500).json({
+      message: "Failed to clear chat history",
+    });
+  }
 };
 
 // ==========================================
 // CAREER COACH CHAT
 // ==========================================
 
-const carrercoachChat = async (req, res) => {  // AI chat
-    try {
-        const { message } = req.body;  // user message come's
+const carrercoachChat = async (req, res) => {
+  // AI chat
+  try {
+    const { message } = req.body; // user message come's
 
-        // ==========================================
-        // VALIDATE MESSAGE
-        // ==========================================
+    // ==========================================
+    // VALIDATE MESSAGE
+    // ==========================================
 
-        if (!message || !message.trim()) {  //check message
-            return res.status(400).json({  // success 
-                message: "Please enter a question",
-            });
-        }
+    if (!message || !message.trim()) {
+      //check message
+      return res.status(400).json({
+        // success
+        message: "Please enter a question",
+      });
+    }
 
-        const userId = req.user.id;  // comes user id
+    const userId = req.user.id; // comes user id
 
-        // ==========================================
-        // FIND LATEST RESUME
-        // ==========================================
+    // ==========================================
+    // FIND LATEST RESUME
+    // ==========================================
 
-        const resume = await Resume.findOne({  // Db find user id
-            user: userId,
-        }).sort({
-            createdAt: -1,
-        });
+    const resume = await Resume.findOne({
+      // Db find user id
+      user: userId,
+    }).sort({
+      createdAt: -1,
+    });
 
-        // ==========================================
-        // BUILD RESUME CONTEXT
-        // ==========================================
+    // ==========================================
+    // BUILD RESUME CONTEXT
+    // ==========================================
 
-        let resumeContext =  
-            "User has not uploaded a resume yet.";
+    let resumeContext = "User has not uploaded a resume yet.";
 
-        if (resume) {
-            resumeContext = `
+    if (resume) {
+      resumeContext = `
 ================ RESUME DATA ================
 
 Resume File:
@@ -106,9 +115,7 @@ Experience Level:
 ${resume.experienceLevel || "Not detected"}
 
 Skills:
-${Array.isArray(resume.skills)
-    ? resume.skills.join(", ")
-    : "Not available"}
+${Array.isArray(resume.skills) ? resume.skills.join(", ") : "Not available"}
 
 Summary:
 ${resume.summary || "Not available"}
@@ -117,30 +124,30 @@ ${resume.summary || "Not available"}
 
 Strengths:
 ${
-    Array.isArray(resume.strengths)
-        ? resume.strengths.join("\n- ")
-        : "Not available"
+  Array.isArray(resume.strengths)
+    ? resume.strengths.join("\n- ")
+    : "Not available"
 }
 
 Weaknesses:
 ${
-    Array.isArray(resume.weaknesses)
-        ? resume.weaknesses.join("\n- ")
-        : "Not available"
+  Array.isArray(resume.weaknesses)
+    ? resume.weaknesses.join("\n- ")
+    : "Not available"
 }
 
 Missing Skills:
 ${
-    Array.isArray(resume.missingSkills)
-        ? resume.missingSkills.join("\n- ")
-        : "Not available"
+  Array.isArray(resume.missingSkills)
+    ? resume.missingSkills.join("\n- ")
+    : "Not available"
 }
 
 Suggestions:
 ${
-    Array.isArray(resume.suggestions)
-        ? resume.suggestions.join("\n- ")
-        : "Not available"
+  Array.isArray(resume.suggestions)
+    ? resume.suggestions.join("\n- ")
+    : "Not available"
 }
 
 Job Role Match:
@@ -156,51 +163,46 @@ ${resume.reason || "Not available"}
 
 ================================================
 `;
-        }
+    }
 
-        // ==========================================
-        // SAVE USER MESSAGE
-        // ==========================================
+    // ==========================================
+    // SAVE USER MESSAGE
+    // ==========================================
 
-        await CarrerChat.create({
-            user: userId,
-            resume: resume?._id,
-            role: "user",
-            message: message.trim(),
-        });
+    await CarrerChat.create({
+      user: userId,
+      resume: resume?._id,
+      role: "user",
+      message: message.trim(),
+    });
 
-        // ==========================================
-        // GET PREVIOUS CHAT
-        // ==========================================
+    // ==========================================
+    // GET PREVIOUS CHAT
+    // ==========================================
 
-        const previousChats = await CarrerChat.find({
-            user: userId,
-        })
-            .sort({
-                createdAt: -1,
-            })
-            .limit(20);
+    const previousChats = await CarrerChat.find({
+      user: userId,
+    })
+      .sort({
+        createdAt: -1,
+      })
+      .limit(20);
 
-        // ==========================================
-        // BUILD CHAT HISTORY
-        // ==========================================
+    // ==========================================
+    // BUILD CHAT HISTORY
+    // ==========================================
 
-        const chatHistory = previousChats
-            .reverse()
-            .map((chat) => ({
-                role:
-                    chat.role === "assistant"
-                        ? "assistant"
-                        : "user",
+    const chatHistory = previousChats.reverse().map((chat) => ({
+      role: chat.role === "assistant" ? "assistant" : "user",
 
-                content: chat.message,
-            }));
+      content: chat.message,
+    }));
 
-        // ==========================================
-        // SYSTEM PROMPT
-        // ==========================================
+    // ==========================================
+    // SYSTEM PROMPT
+    // ==========================================
 
-        const systemPrompt = `
+    const systemPrompt = `
 You are an expert AI Career Coach.
 
 You are helping a job seeker improve their
@@ -238,94 +240,81 @@ USER RESUME + AI ANALYSIS:
 ${resumeContext}
 `;
 
-        // ==========================================
-        // OPENROUTER
-        // ==========================================
+    // ==========================================
+    // OPENROUTER
+    // ==========================================
 
-        const response = await axios.post(
-            "https://openrouter.ai/api/v1/chat/completions",
-            {
-                model:
-                    process.env.AI_MODEL ||
-                    "openai/gpt-4o-mini",  // model ai
+    const response = await axios.post(
+       "https://api.groq.com/openai/v1/chat/completions",
+          
+      {
+        model: process.env.AI_MODEL || "openai/gpt-oss-120b", // model ai
 
-                messages: [
-                    {
-                        role: "system",
-                        content: systemPrompt,
-                    },
+        messages: [
+          {
+            role: "system",
+            content: systemPrompt,
+          },
 
-                    ...chatHistory,
-                ],
-            },
-            {
-                headers: {
-                    Authorization:
-                        `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          ...chatHistory,
+        ],
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
 
-                    "Content-Type":
-                        "application/json",
+          "Content-Type": "application/json",
 
-                    "HTTP-Referer":
-                        process.env.CLIENT_URL ||
-                        "http://localhost:5173",
+          "HTTP-Referer": process.env.CLIENT_URL || "http://localhost:5173",
 
-                    "X-Title":
-                        "AI Resume Analyzer Career Coach",
-                },
-            }
-        );
+          "X-Title": "AI Resume Analyzer Career Coach",
+        },
+      },
+    );
 
-        // ==========================================
-        // GET AI RESPONSE
-        // ==========================================
+    // ==========================================
+    // GET AI RESPONSE
+    // ==========================================
 
-        const reply =
-            response.data?.choices?.[0]?.message?.content;
+    const reply = response.data?.choices?.[0]?.message?.content;
 
-        if (!reply) {
-            return res.status(500).json({
-                message: "AI did not return a response.",
-            });
-        }
-
-        // ==========================================
-        // SAVE AI RESPONSE
-        // ==========================================
-
-        await CarrerChat.create({
-            user: userId,
-            resume: resume?._id,
-            role: "assistant",
-            message: reply,
-        });
-
-        // ==========================================
-        // SEND RESPONSE
-        // ==========================================
-
-        return res.status(200).json({
-            reply,
-        });
-
-    } catch (error) {
-        console.error("CAREER COACH ERROR:");
-
-        console.error(
-            error.response?.data ||
-            error.message
-        );
-
-        return res.status(500).json({
-            message:
-                error.response?.data?.error?.message ||
-                "Career Coach failed.",
-        });
+    if (!reply) {
+      return res.status(500).json({
+        message: "AI did not return a response.",
+      });
     }
+
+    // ==========================================
+    // SAVE AI RESPONSE
+    // ==========================================
+
+    await CarrerChat.create({
+      user: userId,
+      resume: resume?._id,
+      role: "assistant",
+      message: reply,
+    });
+
+    // ==========================================
+    // SEND RESPONSE
+    // ==========================================
+
+    return res.status(200).json({
+      reply,
+    });
+  } catch (error) {
+    console.error("CAREER COACH ERROR:");
+
+    console.error(error.response?.data || error.message);
+
+    return res.status(500).json({
+      message: error.response?.data?.error?.message || "Career Coach failed.",
+    });
+  }
 };
 
 module.exports = {
-    carrercoachChat,
-    clearchat,
-    getChat,
+  carrercoachChat,
+  clearchat,
+  getChat,
 };
